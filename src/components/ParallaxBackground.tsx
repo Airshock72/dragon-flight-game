@@ -1,19 +1,37 @@
-import {FC, useEffect, useRef} from 'react'
+import {FC, MutableRefObject, useEffect, useRef} from 'react'
 import * as PIXI from 'pixi.js'
 import {Sprite, Stage} from '@pixi/react'
 
 const ParallaxBackground: FC = () => {
 
+    const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
     const iceSprite1Ref = useRef<PIXI.Sprite | null>(null)
     const iceSprite2Ref = useRef<PIXI.Sprite | null>(null)
     const waySprite1Ref = useRef<PIXI.Sprite | null>(null)
     const waySprite2Ref = useRef<PIXI.Sprite | null>(null)
 
     useEffect(() => {
-        if (!iceSprite1Ref.current || !iceSprite2Ref.current || !waySprite1Ref.current || !waySprite2Ref.current) return
+        if (
+            iceSpriteRefs.current.some(ref => ref.current === null)
+            || !waySprite1Ref.current
+            || !waySprite2Ref.current
+            || !iceSprite1Ref.current
+            || !iceSprite2Ref.current
+        ) return
 
         const ticker = new PIXI.Ticker()
         ticker.add(() => {
+
+            iceSpriteRefs.current.forEach(iceRef => {
+                if (iceRef.current) {
+                    (iceRef.current as PIXI.Sprite).x -= 15; // Move the ice sprites to the left
+
+                    // Reset position once completely off-screen
+                    if ((iceRef.current as PIXI.Sprite).x <= -(iceRef.current as PIXI.Sprite).width) {
+                        (iceRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + (iceRef.current as PIXI.Sprite).width + 3500; // Adding spacing between them
+                    }
+                }
+            })
             if (iceSprite1Ref.current && iceSprite2Ref.current) {
                 // Move both ice backgrounds to the left
                 (iceSprite1Ref.current as PIXI.Sprite).x -= 2;
@@ -87,6 +105,30 @@ const ParallaxBackground: FC = () => {
                 x={0}
                 y={2715}
                 width={3500}
+                height={500}
+            />
+            <Sprite
+                ref={iceSpriteRefs.current[0]}
+                image="/assets/Ice_01.png"
+                x={0}
+                y={2300}
+                width={1000}
+                height={500}
+            />
+            <Sprite
+                ref={iceSpriteRefs.current[1]}
+                image="/assets/Ice_02.png"
+                x={3500}
+                y={2300}
+                width={1000}
+                height={500}
+            />
+            <Sprite
+                ref={iceSpriteRefs.current[2]}
+                image="/assets/Ice_03.png"
+                x={7000}
+                y={2300}
+                width={1000}
                 height={500}
             />
             <Sprite
