@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js'
 import {AnimatedSprite} from '@pixi/react'
 
 
-const   DragonAnimation: FC = () => {
+const DragonAnimation: FC = () => {
     const dragonRef = useRef<PIXI.AnimatedSprite | null>(null)
 
     const dragonBaseTexture = PIXI.BaseTexture.from('/assets/dragon_animation/Dragon_Fly.png')
@@ -29,7 +29,7 @@ const   DragonAnimation: FC = () => {
             textures={dragonFrames}
             isPlaying={true}
             initialFrame={0}
-            animationSpeed={0.5}
+            animationSpeed={0.8}
             x={0}
             y={1500}
             width={frameWidth * 0.5} // Reduce width to 50% of the original

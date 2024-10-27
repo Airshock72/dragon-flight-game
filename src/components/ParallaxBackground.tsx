@@ -3,15 +3,17 @@ import * as PIXI from 'pixi.js'
 import {Sprite, Stage} from '@pixi/react'
 import DragonAnimation from './DragonAnimation.tsx'
 import PlayerBalance from './PlayerBalance.tsx'
+import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
 
 const ParallaxBackground: FC = () => {
-
     const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
     const iceCubeRef = useRef<PIXI.Sprite | null>(null)
+    const destroyCubeRef = useRef<PIXI.AnimatedSprite | null>(null)
     const iceSprite1Ref = useRef<PIXI.Sprite | null>(null)
     const iceSprite2Ref = useRef<PIXI.Sprite | null>(null)
     const waySprite1Ref = useRef<PIXI.Sprite | null>(null)
     const waySprite2Ref = useRef<PIXI.Sprite | null>(null)
+    const hasPlayedDestroyAnimation = useRef(false)
 
     useEffect(() => {
         if (
@@ -37,11 +39,32 @@ const ParallaxBackground: FC = () => {
             })
 
             if (iceCubeRef.current) {
-                (iceCubeRef.current as PIXI.Sprite).x -= 15; // Move to the left at the same speed as other ice sprites
+                (iceCubeRef.current as PIXI.Sprite).x -= 15;
+                const isVisible = (iceCubeRef.current as PIXI.Sprite).x > 1500 - (iceCubeRef.current as PIXI.Sprite).width / 2;
+                (iceCubeRef.current as PIXI.Sprite).visible = isVisible;
+
+                if (destroyCubeRef.current) {
+                    if (!isVisible && !hasPlayedDestroyAnimation.current) {
+                        // Align the destroy animation x-position with iceCubeRef x-position
+                        (destroyCubeRef.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x - 230;
+                        (destroyCubeRef.current as PIXI.Sprite).visible = true;
+                        (destroyCubeRef.current as PIXI.AnimatedSprite).gotoAndPlay(0);
+                        hasPlayedDestroyAnimation.current = true;
+                    }
+                }
+
+                if ((iceCubeRef.current as PIXI.Sprite).x <= -iceCubeRef.current?.width) {
+                    (iceCubeRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + iceCubeRef.current?.width - 5000;
+                    hasPlayedDestroyAnimation.current = false;
+                }
+            }
+
+            if (destroyCubeRef.current) {
+                (destroyCubeRef.current as PIXI.Sprite).x -= 15; // Move to the left at the same speed as other ice sprites
 
                 // Reset position when off-screen
-                if ((iceCubeRef.current as PIXI.Sprite).x <= -iceCubeRef.current?.width) {
-                    (iceCubeRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + iceCubeRef.current?.width - 5000; // Reduce the spacing here
+                if ((destroyCubeRef.current as PIXI.Sprite).x <= -destroyCubeRef.current?.width) {
+                    (destroyCubeRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map((sprite) => sprite.current?.x ?? 0)) + destroyCubeRef.current?.width - 5000 // Reduce the spacing here
                 }
             }
 
@@ -163,6 +186,7 @@ const ParallaxBackground: FC = () => {
                 width={400}
                 height={400}
             />
+            <CubeDestroyAnimation destroyCubeRef={destroyCubeRef} />
             <DragonAnimation />
             <Sprite
                 image="/assets/Uv.png"
