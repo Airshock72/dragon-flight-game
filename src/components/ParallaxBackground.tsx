@@ -55,7 +55,7 @@ const ParallaxBackground: FC = () => {
                     if (!isVisible && !hasPlayedDestroyAnimation.current) {
 
                         if (brokenCube1Ref.current) {
-                            (brokenCube1Ref.current as PIXI.Sprite).x = iceCubeRef.current.x;
+                            (brokenCube1Ref.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x;
                             (brokenCube1Ref.current as PIXI.Sprite).y = 2650; // Set Y position to ensure the same starting point
                             (brokenCube1Ref.current as PIXI.Sprite).visible = true;
                         }
@@ -84,23 +84,21 @@ const ParallaxBackground: FC = () => {
 
             if (destroyCubeRef.current && brokenCube1Ref.current && brokenCube2Ref.current) {
                 if (arcStep < arcDuration) {
-                    // Arc animation logic
+                    // Arc animation logic with additional leftward movement
+                    (brokenCube1Ref.current as PIXI.Sprite).x -= 15; // Leftward movement along with the arc
                     (brokenCube1Ref.current as PIXI.Sprite).x -= 4;
                     (brokenCube1Ref.current as PIXI.Sprite).y += Math.sin((arcStep / arcDuration) * Math.PI) * 11;
 
-                    (brokenCube2Ref.current as PIXI.Sprite).x += 10;
+                    (brokenCube2Ref.current as PIXI.Sprite).x -= 5; // Leftward movement along with the arc
                     (brokenCube2Ref.current as PIXI.Sprite).y += Math.sin((arcStep / arcDuration) * Math.PI) * 6;
 
                     arcStep++;
                 } else {
-                    // Resume usual movement after arc animation
-                    [destroyCubeRef, brokenCube1Ref, brokenCube2Ref].forEach(ref => {
+                    // Resume usual leftward movement after arc animation
+                    [brokenCube1Ref, brokenCube2Ref].forEach(ref => {
                         if (ref.current) {
-                            ref.current.x -= 15;
-                            if (ref.current.x <= -ref.current.width) {
-                                ref.current.x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + ref.current.width - 1000;
-                                ref.current.visible = false;
-                            }
+                            (ref.current as PIXI.Sprite).x -= 15;
+                            if ((ref.current as PIXI.Sprite).x <= -(ref.current as PIXI.Sprite).width) (ref.current as PIXI.Sprite).visible = false
                         }
                     });
                 }

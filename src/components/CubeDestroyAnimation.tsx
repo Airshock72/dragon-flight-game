@@ -1,4 +1,4 @@
-import {MutableRefObject} from 'react'
+import {MutableRefObject, useEffect} from 'react'
 import {AnimatedSprite} from '@pixi/react'
 import * as PIXI from 'pixi.js'
 
@@ -24,6 +24,30 @@ const CubeDestroyAnimation = (props: CubeDestroyAnimationProps) => {
             new PIXI.Rectangle(col * frameWidth, row * frameHeight, frameWidth, frameHeight)
         );
     });
+
+
+    useEffect(() => {
+        const ticker = new PIXI.Ticker();
+
+        ticker.add(() => {
+            if (props.destroyCubeRef.current) {
+                (props.destroyCubeRef.current as PIXI.AnimatedSprite).x -= 15; // Move the cube left by 15 pixels per tick
+
+                // Hide when it goes off-screen, and reset x position if needed
+                if ((props.destroyCubeRef.current as PIXI.AnimatedSprite).x <= -frameWidth) {
+                    (props.destroyCubeRef.current as PIXI.AnimatedSprite).visible = false;
+                    (props.destroyCubeRef.current as PIXI.AnimatedSprite).stop(); // Stop the animation
+                }
+            }
+        });
+
+        ticker.start();
+
+        return () => {
+            ticker.stop();
+            ticker.destroy();
+        };
+    }, [frameWidth, props.destroyCubeRef]);
 
     return (
         <AnimatedSprite
