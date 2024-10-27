@@ -13,6 +13,8 @@ const ParallaxBackground: FC = () => {
     const iceSprite2Ref = useRef<PIXI.Sprite | null>(null)
     const waySprite1Ref = useRef<PIXI.Sprite | null>(null)
     const waySprite2Ref = useRef<PIXI.Sprite | null>(null)
+    const brokenCube1Ref = useRef<PIXI.Sprite | null>(null)
+    const brokenCube2Ref = useRef<PIXI.Sprite | null>(null)
     const hasPlayedDestroyAnimation = useRef(false)
 
     useEffect(() => {
@@ -22,6 +24,8 @@ const ParallaxBackground: FC = () => {
             || !waySprite2Ref.current
             || !iceSprite1Ref.current
             || !iceCubeRef.current
+            || !brokenCube1Ref.current
+            || !brokenCube2Ref.current
     ) return
 
         const ticker = new PIXI.Ticker()
@@ -45,6 +49,18 @@ const ParallaxBackground: FC = () => {
 
                 if (destroyCubeRef.current) {
                     if (!isVisible && !hasPlayedDestroyAnimation.current) {
+
+                        if (brokenCube1Ref.current) {
+                            (brokenCube1Ref.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x - 230;
+                            (brokenCube1Ref.current as PIXI.Sprite).visible = true;
+                        }
+
+                        if (brokenCube2Ref.current) {
+                            // Position `Ice_Cube_Up_Broken.png` to the right of `Ice_Cube.png`
+                            (brokenCube2Ref.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x + (iceCubeRef.current as PIXI.Sprite).width + 300;
+                            (brokenCube2Ref.current as PIXI.Sprite).visible = true;
+                        }
+
                         // Align the destroy animation x-position with iceCubeRef x-position
                         (destroyCubeRef.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x - 230;
                         (destroyCubeRef.current as PIXI.Sprite).visible = true;
@@ -54,18 +70,22 @@ const ParallaxBackground: FC = () => {
                 }
 
                 if ((iceCubeRef.current as PIXI.Sprite).x <= -iceCubeRef.current?.width) {
-                    (iceCubeRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + iceCubeRef.current?.width - 5000;
+                    (iceCubeRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + iceCubeRef.current?.width - 1000;
                     hasPlayedDestroyAnimation.current = false;
                 }
             }
 
-            if (destroyCubeRef.current) {
-                (destroyCubeRef.current as PIXI.Sprite).x -= 15; // Move to the left at the same speed as other ice sprites
+            if (destroyCubeRef.current && brokenCube1Ref.current && brokenCube2Ref.current) {
+                [destroyCubeRef, brokenCube1Ref, brokenCube2Ref].forEach(ref => {
+                    if (ref.current) {
+                        (ref.current as PIXI.Sprite).x -= 15;
 
-                // Reset position when off-screen
-                if ((destroyCubeRef.current as PIXI.Sprite).x <= -destroyCubeRef.current?.width) {
-                    (destroyCubeRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map((sprite) => sprite.current?.x ?? 0)) + destroyCubeRef.current?.width - 5000 // Reduce the spacing here
-                }
+                        if ((ref.current as PIXI.Sprite).x <= -ref.current?.width) {
+                            (ref.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map((sprite) => sprite.current?.x ?? 0)) + ref.current?.width - 1000;
+                            ref.current.visible = false; // Hide the broken cubes when they go off-screen
+                        }
+                    }
+                });
             }
 
 
@@ -185,6 +205,26 @@ const ParallaxBackground: FC = () => {
                 y={2430}
                 width={400}
                 height={400}
+            />
+            <Sprite
+                ref={brokenCube1Ref}
+                image="/assets/Ice_Cube_Broken_01.png"
+                x={0} // Initially hidden
+                y={2840}
+                width={100}
+                height={100}
+                visible={false}
+                rotation={-Math.PI / 2} // Rotate 90 degrees to the left
+            />
+            <Sprite
+                ref={brokenCube2Ref}
+                image="/assets/Ice_Cube_Up_Broken.png"
+                x={0} // Initially hidden
+                y={2750}
+                width={100}
+                height={100}
+                visible={false}
+                rotation={Math.PI / 2} // Rotate 90 degrees to the left
             />
             <CubeDestroyAnimation destroyCubeRef={destroyCubeRef} />
             <DragonAnimation />
