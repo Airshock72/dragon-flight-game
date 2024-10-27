@@ -3,7 +3,7 @@ import * as PIXI from 'pixi.js'
 import {AnimatedSprite} from '@pixi/react'
 
 
-const DragonAnimation: FC = () => {
+const   DragonAnimation: FC = () => {
     const dragonRef = useRef<PIXI.AnimatedSprite | null>(null)
 
     const dragonBaseTexture = PIXI.BaseTexture.from('/assets/dragon_animation/Dragon_Fly.png')

@@ -2,6 +2,7 @@ import {FC, MutableRefObject, useEffect, useRef} from 'react'
 import * as PIXI from 'pixi.js'
 import {Sprite, Stage} from '@pixi/react'
 import DragonAnimation from './DragonAnimation.tsx'
+import PlayerBalance from './PlayerBalance.tsx'
 
 const ParallaxBackground: FC = () => {
 
@@ -149,6 +150,7 @@ const ParallaxBackground: FC = () => {
                 width={2160}
                 height={3840}
             />
+            <PlayerBalance />
         </Stage>
     )
 }
