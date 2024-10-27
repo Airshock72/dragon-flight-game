@@ -7,6 +7,7 @@ import PlayerBalance from './PlayerBalance.tsx'
 const ParallaxBackground: FC = () => {
 
     const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
+    const iceCubeRef = useRef<PIXI.Sprite | null>(null)
     const iceSprite1Ref = useRef<PIXI.Sprite | null>(null)
     const iceSprite2Ref = useRef<PIXI.Sprite | null>(null)
     const waySprite1Ref = useRef<PIXI.Sprite | null>(null)
@@ -18,7 +19,8 @@ const ParallaxBackground: FC = () => {
             || !waySprite1Ref.current
             || !waySprite2Ref.current
             || !iceSprite1Ref.current
-        ) return
+            || !iceCubeRef.current
+    ) return
 
         const ticker = new PIXI.Ticker()
         ticker.add(() => {
@@ -33,6 +35,17 @@ const ParallaxBackground: FC = () => {
                     }
                 }
             })
+
+            if (iceCubeRef.current) {
+                (iceCubeRef.current as PIXI.Sprite).x -= 15; // Move to the left at the same speed as other ice sprites
+
+                // Reset position when off-screen
+                if ((iceCubeRef.current as PIXI.Sprite).x <= -iceCubeRef.current?.width) {
+                    (iceCubeRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + iceCubeRef.current?.width - 5000; // Reduce the spacing here
+                }
+            }
+
+
             if (iceSprite1Ref.current && iceSprite2Ref.current) {
                 // Move both ice backgrounds to the left
                 (iceSprite1Ref.current as PIXI.Sprite).x -= 2;
@@ -141,6 +154,14 @@ const ParallaxBackground: FC = () => {
                 height={500}
                 anchor={{ x: 1, y: 0 }} // Anchor to the right side for flipping
                 scale={{ x: -1, y: 1 }} // Flip horizontally using scale
+            />
+            <Sprite
+                ref={iceCubeRef}
+                image="/assets/Ice_Cube.png"
+                x={5000}
+                y={2430}
+                width={400}
+                height={400}
             />
             <DragonAnimation />
             <Sprite
