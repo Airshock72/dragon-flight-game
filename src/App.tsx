@@ -4,9 +4,7 @@ import './index.css'
 
 const App: FC = () => {
     return (
-       <>
-           <ParallaxBackground />
-       </>
+        <ParallaxBackground />
     )
 }
 
