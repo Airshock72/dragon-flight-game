@@ -1,11 +1,9 @@
-import {FC, MutableRefObject, useEffect, useRef} from 'react'
+import { FC, MutableRefObject, useEffect, useRef } from 'react'
 import * as PIXI from 'pixi.js'
-import {Sprite, Stage} from '@pixi/react'
-import DragonAnimation from './DragonAnimation.tsx'
+import { Sprite, Stage, AnimatedSprite } from '@pixi/react'
 import PlayerBalance from './PlayerBalance.tsx'
 import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
 import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
-import DragonAttackAnimation from './DragonAttackAnimation.tsx'
 
 const ParallaxBackground: FC = () => {
     const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
@@ -18,7 +16,10 @@ const ParallaxBackground: FC = () => {
     const waySprite2Ref = useRef<PIXI.Sprite | null>(null)
     const brokenCube1Ref = useRef<PIXI.Sprite | null>(null)
     const brokenCube2Ref = useRef<PIXI.Sprite | null>(null)
+    const dragonFlyRef = useRef<PIXI.AnimatedSprite | null>(null)
+    const dragonAttackRef = useRef<PIXI.AnimatedSprite | null>(null)
     const hasPlayedDestroyAnimation = useRef(false)
+    const isAttacking = useRef(false)
 
     useEffect(() => {
         if (
@@ -30,15 +31,15 @@ const ParallaxBackground: FC = () => {
             || !brokenCube1Ref.current
             || !brokenCube2Ref.current
             || !cubeDestroyEffectRef.current
-    ) return
+            || !dragonFlyRef.current
+            || !dragonAttackRef.current
+        ) return
 
         const ticker = new PIXI.Ticker()
         const arcDuration = 30; // Adjust for arc animation speed
         let arcStep = 0;
 
-
         ticker.add(() => {
-
             iceSpriteRefs.current.forEach(iceRef => {
                 if (iceRef.current) {
                     (iceRef.current as PIXI.Sprite).x -= 15; // Move the ice sprites to the left
@@ -109,7 +110,6 @@ const ParallaxBackground: FC = () => {
                 }
             }
 
-
             if (iceSprite1Ref.current && iceSprite2Ref.current) {
                 // Move both ice backgrounds to the left
                 (iceSprite1Ref.current as PIXI.Sprite).x -= 2;
@@ -157,6 +157,24 @@ const ParallaxBackground: FC = () => {
                 cubeDestroyEffectRef.current!.x = 1000; // Set to a default starting position
                 cubeDestroyEffectRef.current!.visible = true;
                 cubeDestroyEffectRef.current!.gotoAndPlay(0);
+            }
+
+            if (dragonFlyRef.current && dragonAttackRef.current) {
+                // Trigger the attack animation when Ice_Cube.png reaches the middle of the screen
+                if (!isAttacking.current && iceCubeRef.current && (iceCubeRef.current as PIXI.Sprite).x <= 1700 && (iceCubeRef.current as PIXI.Sprite).x > 1200) {
+                    isAttacking.current = true;
+                    dragonFlyRef.current!.visible = false;
+                    dragonAttackRef.current!.visible = true;
+                    dragonAttackRef.current!.gotoAndPlay(0);
+                }
+
+                // Switch back to flying after attack animation is complete
+                if (isAttacking.current && dragonAttackRef.current!.currentFrame >= dragonAttackRef.current!.totalFrames - 1) {
+                    isAttacking.current = false;
+                    dragonAttackRef.current!.visible = false;
+                    dragonFlyRef.current!.visible = true;
+                    dragonFlyRef.current!.gotoAndPlay(0);
+                }
             }
         })
         ticker.start()
@@ -266,8 +284,46 @@ const ParallaxBackground: FC = () => {
             />
             <CubeDestroyAnimation destroyCubeRef={destroyCubeRef} />
             <IceCubeEffectAnimation cubeDestroyEffectRef={cubeDestroyEffectRef} />
-            <DragonAnimation />
-            <DragonAttackAnimation />
+            <AnimatedSprite
+                ref={dragonFlyRef}
+                textures={Array.from({ length: 31 }, (_, index) => {
+                    const row = Math.floor(index / 4);
+                    const col = index % 4;
+                    return new PIXI.Texture(
+                        PIXI.BaseTexture.from('/assets/dragon_animation/Dragon_Fly.png'),
+                        new PIXI.Rectangle(col * (5840 / 4), row * (5944 / 8), 5840 / 4, 5944 / 8)
+                    );
+                })}
+                isPlaying={true}
+                initialFrame={0}
+                animationSpeed={0.8}
+                x={0}
+                y={1500}
+                width={(5840 / 4) * 0.5}
+                height={(5944 / 8) * 0.5}
+                loop={true}
+                visible={true}
+            />
+            <AnimatedSprite
+                ref={dragonAttackRef}
+                textures={Array.from({ length: 30 }, (_, index) => {
+                    const row = Math.floor(index / 4);
+                    const col = index % 4;
+                    return new PIXI.Texture(
+                        PIXI.BaseTexture.from('/assets/dragon_animation/Attack.png'),
+                        new PIXI.Rectangle(col * (6656 / 4), row * (8864 / 8), 6656 / 4, 8864 / 8)
+                    );
+                })}
+                isPlaying={false}
+                initialFrame={0}
+                animationSpeed={0.5}
+                x={-10}
+                y={1370}
+                width={(6656 / 4) * 0.5}
+                height={(8864 / 8) * 0.5}
+                loop={false}
+                visible={false}
+            />
             <Sprite
                 image="/assets/Uv.png"
                 x={0}
