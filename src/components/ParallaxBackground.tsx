@@ -5,6 +5,7 @@ import DragonAnimation from './DragonAnimation.tsx'
 import PlayerBalance from './PlayerBalance.tsx'
 import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
 import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
+import DragonAttackAnimation from './DragonAttackAnimation.tsx'
 
 const ParallaxBackground: FC = () => {
     const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
@@ -266,6 +267,7 @@ const ParallaxBackground: FC = () => {
             <CubeDestroyAnimation destroyCubeRef={destroyCubeRef} />
             <IceCubeEffectAnimation cubeDestroyEffectRef={cubeDestroyEffectRef} />
             <DragonAnimation />
+            <DragonAttackAnimation />
             <Sprite
                 image="/assets/Uv.png"
                 x={0}
