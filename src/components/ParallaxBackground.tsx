@@ -22,6 +22,7 @@ const ParallaxBackground: FC = () => {
     const hasPlayedDestroyAnimation = useRef(false)
     const isAttacking = useRef(false)
     const fireRef = useRef<PIXI.AnimatedSprite | null>(null);
+    const coinRef = useRef<PIXI.Sprite | null>(null); // New ref for Coin.png
 
     useEffect(() => {
         if (
@@ -38,6 +39,7 @@ const ParallaxBackground: FC = () => {
         ) return
 
         const ticker = new PIXI.Ticker()
+        let iceCubeMovingRight = false; // Flag to track rightward movement
         let fireThrown = false; // Track if fire animation has been triggered
         const arcDuration = 30; // Adjust for arc animation speed
         let arcStep = 0;
@@ -69,7 +71,24 @@ const ParallaxBackground: FC = () => {
                 }
             }
 
+            if (destroyCubeRef.current!.visible) {
+                coinRef.current!.visible = true; // Show the coin
+            }
+
             if (iceCubeRef.current) {
+                const iceCubeSprite = iceCubeRef.current as PIXI.Sprite;
+
+                if (iceCubeSprite.visible && !iceCubeMovingRight) {
+                    iceCubeSprite.x += 10; // Move right
+                    iceCubeSprite.y -= 5; // Move up slightly
+                }
+
+                // Stop movement once reaching the right edge
+                if (iceCubeSprite.x >= 2160 - iceCubeSprite.width) { // Assuming 2160 is the stage width
+                    iceCubeMovingRight = true;
+                }
+
+
                 (iceCubeRef.current as PIXI.Sprite).x -= 15;
                 const isVisible = (iceCubeRef.current as PIXI.Sprite).x > 1500 - (iceCubeRef.current as PIXI.Sprite).width / 2;
                 (iceCubeRef.current as PIXI.Sprite).visible = isVisible;
@@ -271,6 +290,15 @@ const ParallaxBackground: FC = () => {
                 height={500}
                 anchor={{ x: 1, y: 0 }} // Anchor to the right side for flipping
                 scale={{ x: -1, y: 1 }} // Flip horizontally using scale
+            />
+            <Sprite
+                ref={coinRef}
+                image="/assets/Coin.png"
+                x={1250}
+                y={2500}
+                width={150}
+                height={150}
+                visible={false}
             />
             <Sprite
                 ref={iceCubeRef}
