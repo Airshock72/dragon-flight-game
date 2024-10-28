@@ -1,53 +1,59 @@
-import {MutableRefObject, useEffect} from 'react'
-import {AnimatedSprite} from '@pixi/react'
-import * as PIXI from 'pixi.js'
+import { MutableRefObject, useEffect } from 'react';
+import { AnimatedSprite } from '@pixi/react';
+import * as PIXI from 'pixi.js';
 
 interface CubeDestroyAnimationProps {
-    destroyCubeRef: MutableRefObject<PIXI.AnimatedSprite | null>
+    destroyCubeRef: MutableRefObject<PIXI.AnimatedSprite | null>;
 }
 
+// Create the texture and update its baseTexture for GPU upload
+const destroyCubeTexture = PIXI.Texture.from('/assets/VFX/Cube.png');
+destroyCubeTexture.baseTexture.update(); // Force GPU upload
+const sheetWidth = 4096;
+const sheetHeight = 4096;
+const frameWidth = sheetWidth / 4;
+const frameHeight = sheetHeight / 8;
+const destroyCubeFrames = Array.from({ length: 32 }, (_, index) => {
+    const row = Math.floor(index / 4);
+    const col = index % 4;
+    return new PIXI.Texture(
+        destroyCubeTexture.baseTexture,
+        new PIXI.Rectangle(col * frameWidth, row * frameHeight, frameWidth, frameHeight)
+    );
+});
+
 const CubeDestroyAnimation = (props: CubeDestroyAnimationProps) => {
-
-    const destroyCubeTexture = PIXI.BaseTexture.from('/assets/VFX/Cube.png')
-
-    const sheetWidth = 4096; // Total width of the sprite sheet
-    const sheetHeight = 4096; // Total height of the sprite sheet
-    const frameWidth = sheetWidth / 4; // Width of each frame in the sprite sheet
-    const frameHeight = sheetHeight / 8; // Height of each frame in the sprite sheet
-
-    // Prepare dragon animation frames
-    const destroyCubeFrames = Array.from({ length: 32 }, (_, index) => {
-        const row = Math.floor(index / 4);
-        const col = index % 4;
-        return new PIXI.Texture(
-            destroyCubeTexture,
-            new PIXI.Rectangle(col * frameWidth, row * frameHeight, frameWidth, frameHeight)
-        );
-    });
-
-
     useEffect(() => {
-        const ticker = new PIXI.Ticker();
+        // Cache the animation by running it in hidden mode
+        if (props.destroyCubeRef.current) {
+            props.destroyCubeRef.current!.visible = false;
+            props.destroyCubeRef.current!.gotoAndPlay(0);
+            props.destroyCubeRef.current!.onComplete = () => {
+                props.destroyCubeRef.current?.stop();
+                props.destroyCubeRef.current!.visible = true; // Make it visible when ready
+            };
+        }
 
+        // Ticker setup for movement
+        const ticker = new PIXI.Ticker();
         ticker.add(() => {
             if (props.destroyCubeRef.current) {
-                (props.destroyCubeRef.current as PIXI.AnimatedSprite).x -= 15; // Move the cube left by 15 pixels per tick
+                props.destroyCubeRef.current!.x -= 15;
 
-                // Hide when it goes off-screen, and reset x position if needed
-                if ((props.destroyCubeRef.current as PIXI.AnimatedSprite).x <= -frameWidth) {
-                    (props.destroyCubeRef.current as PIXI.AnimatedSprite).visible = false;
-                    (props.destroyCubeRef.current as PIXI.AnimatedSprite).stop(); // Stop the animation
+                if (props.destroyCubeRef.current!.x <= -frameWidth) {
+                    props.destroyCubeRef.current!.visible = false;
+                    props.destroyCubeRef.current!.stop();
+                    props.destroyCubeRef.current!.x = 1000; // Reset position for next animation
                 }
             }
         });
 
         ticker.start();
-
         return () => {
             ticker.stop();
             ticker.destroy();
         };
-    }, [frameWidth, props.destroyCubeRef]);
+    }, [props.destroyCubeRef]);
 
     return (
         <AnimatedSprite
@@ -57,13 +63,12 @@ const CubeDestroyAnimation = (props: CubeDestroyAnimationProps) => {
             initialFrame={0}
             animationSpeed={0.4}
             x={1000}
-            visible={false}
             y={2370}
-            width={frameWidth} // Reduce width to 50% of the original
-            height={frameHeight} // Reduce height to 50% of the original
+            width={frameWidth}
+            height={frameHeight}
             loop={false}
         />
-    )
-}
+    );
+};
 
-export default CubeDestroyAnimation
+export default CubeDestroyAnimation;
