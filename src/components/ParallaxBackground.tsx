@@ -4,11 +4,13 @@ import {Sprite, Stage} from '@pixi/react'
 import DragonAnimation from './DragonAnimation.tsx'
 import PlayerBalance from './PlayerBalance.tsx'
 import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
+import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
 
 const ParallaxBackground: FC = () => {
     const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
     const iceCubeRef = useRef<PIXI.Sprite | null>(null)
     const destroyCubeRef = useRef<PIXI.AnimatedSprite | null>(null)
+    const cubeDestroyEffectRef = useRef<PIXI.AnimatedSprite | null>(null)
     const iceSprite1Ref = useRef<PIXI.Sprite | null>(null)
     const iceSprite2Ref = useRef<PIXI.Sprite | null>(null)
     const waySprite1Ref = useRef<PIXI.Sprite | null>(null)
@@ -26,6 +28,7 @@ const ParallaxBackground: FC = () => {
             || !iceCubeRef.current
             || !brokenCube1Ref.current
             || !brokenCube2Ref.current
+            || !cubeDestroyEffectRef.current
     ) return
 
         const ticker = new PIXI.Ticker()
@@ -71,6 +74,7 @@ const ParallaxBackground: FC = () => {
                         (destroyCubeRef.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x - 230;
                         (destroyCubeRef.current as PIXI.Sprite).visible = true;
                         (destroyCubeRef.current as PIXI.AnimatedSprite).gotoAndPlay(0);
+                        cubeDestroyEffectRef.current!.gotoAndPlay(0);
                         hasPlayedDestroyAnimation.current = true;
                         arcStep = 0; // Reset arcStep for arc animation
                     }
@@ -135,6 +139,23 @@ const ParallaxBackground: FC = () => {
                 if ((waySprite2Ref.current as PIXI.Sprite).x <= -(waySprite2Ref.current as PIXI.Sprite).width) {
                     (waySprite2Ref.current as PIXI.Sprite).x = (waySprite1Ref.current as PIXI.Sprite).x + (waySprite1Ref.current as PIXI.Sprite).width
                 }
+            }
+
+            // Move IceCubeEffectAnimation left if visible and playing
+            if (cubeDestroyEffectRef.current && cubeDestroyEffectRef.current!.visible) {
+                cubeDestroyEffectRef.current!.x -= 15;
+
+                // Optional: reset or hide once off-screen
+                if (cubeDestroyEffectRef.current!.x <= -cubeDestroyEffectRef.current!.width) {
+                    cubeDestroyEffectRef.current!.visible = false; // Adjust logic if you want it to reappear
+                }
+            }
+
+            // Reset position and play the animation when triggered
+            if (!cubeDestroyEffectRef.current!.visible && hasPlayedDestroyAnimation.current!) {
+                cubeDestroyEffectRef.current!.x = 1000; // Set to a default starting position
+                cubeDestroyEffectRef.current!.visible = true;
+                cubeDestroyEffectRef.current!.gotoAndPlay(0);
             }
         })
         ticker.start()
@@ -243,6 +264,7 @@ const ParallaxBackground: FC = () => {
                 rotation={Math.PI / 2} // Rotate 90 degrees to the left
             />
             <CubeDestroyAnimation destroyCubeRef={destroyCubeRef} />
+            <IceCubeEffectAnimation cubeDestroyEffectRef={cubeDestroyEffectRef} />
             <DragonAnimation />
             <Sprite
                 image="/assets/Uv.png"
