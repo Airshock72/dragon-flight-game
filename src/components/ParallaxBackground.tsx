@@ -4,6 +4,7 @@ import { Sprite, Stage, AnimatedSprite } from '@pixi/react'
 import PlayerBalance from './PlayerBalance.tsx'
 import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
 import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
+import FireThrowAnimation from './FireThrowAnimation.tsx'
 
 const ParallaxBackground: FC = () => {
     const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
@@ -20,6 +21,7 @@ const ParallaxBackground: FC = () => {
     const dragonAttackRef = useRef<PIXI.AnimatedSprite | null>(null)
     const hasPlayedDestroyAnimation = useRef(false)
     const isAttacking = useRef(false)
+    const fireRef = useRef<PIXI.AnimatedSprite | null>(null);
 
     useEffect(() => {
         if (
@@ -36,6 +38,7 @@ const ParallaxBackground: FC = () => {
         ) return
 
         const ticker = new PIXI.Ticker()
+        let fireThrown = false; // Track if fire animation has been triggered
         const arcDuration = 30; // Adjust for arc animation speed
         let arcStep = 0;
 
@@ -50,6 +53,21 @@ const ParallaxBackground: FC = () => {
                     }
                 }
             })
+
+            if (dragonAttackRef.current && fireRef.current) {
+                const currentFrame = dragonAttackRef.current!.currentFrame!;
+                if (currentFrame === 14 && !fireThrown) {
+                    // Trigger fire animation
+                    fireRef.current!.visible = true;
+                    fireRef.current!.gotoAndPlay(0);
+                    fireThrown = true;
+                }
+
+                // Reset fireThrown when dragonAttack finishes
+                if (currentFrame >= dragonAttackRef.current!.totalFrames - 1) {
+                    fireThrown = false;
+                }
+            }
 
             if (iceCubeRef.current) {
                 (iceCubeRef.current as PIXI.Sprite).x -= 15;
@@ -324,6 +342,7 @@ const ParallaxBackground: FC = () => {
                 loop={false}
                 visible={false}
             />
+            <FireThrowAnimation fireRef={fireRef} />
             <Sprite
                 image="/assets/Uv.png"
                 x={0}
