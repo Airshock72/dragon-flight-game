@@ -123,6 +123,12 @@ const ParallaxBackground: FC = () => {
                 coinRef.current!.visible = false;
                 steadyCoinRef.current!.visible = true;
 
+                // Trigger SparklesAnimation here
+                if (sparkleRef.current) {
+                    sparkleRef.current!.visible = true;
+                    sparkleRef.current!.gotoAndPlay(0); // Start the sparkle animation
+                }
+
                 scoreRef.current += 100; // Increment score only once
                 scoreUpdated.current = true; // Set the flag to prevent further increments
 
