@@ -1,10 +1,11 @@
 import { FC, MutableRefObject, useEffect, useRef } from 'react'
 import * as PIXI from 'pixi.js'
-import { Sprite, Stage, AnimatedSprite } from '@pixi/react'
+import {Sprite, Stage, AnimatedSprite, Graphics, Text} from '@pixi/react'
 import PlayerBalance from './PlayerBalance.tsx'
 import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
 import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
 import FireThrowAnimation from './FireThrowAnimation.tsx'
+import {TextStyle} from 'pixi.js'
 
 const ParallaxBackground: FC = () => {
     const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
@@ -24,6 +25,22 @@ const ParallaxBackground: FC = () => {
     const fireRef = useRef<PIXI.AnimatedSprite | null>(null);
     const coinRef = useRef<PIXI.Sprite | null>(null); // New ref for Coin.png
     const steadyCoinRef = useRef<PIXI.Sprite | null>(null); // New ref for Coin.png
+    const coinBackgroundRef = useRef<PIXI.Graphics | null>(null); // Ref for the gray background
+    const coinVisibleRef = useRef(false); // Ref to control visibility without causing re-render
+    const textRef = useRef<PIXI.Text | null>(null);
+
+    useEffect(() => {
+        const loadFont = async () => {
+            try {
+                const font = new FontFace('Keons', `url('/assets/font/Keons.240827-1105.otf')`)
+                await font.load()
+                document.fonts.add(font)
+            } catch (error) {
+                console.error('Font loading failed:', error)
+            }
+        }
+        loadFont().then()
+    }, [])
 
     useEffect(() => {
         if (
@@ -50,6 +67,24 @@ const ParallaxBackground: FC = () => {
         let coinAnimating = false // Track if coin animation is running
 
         ticker.add(() => {
+
+            if (coinRef.current && destroyCubeRef.current!.visible) {
+                coinVisibleRef.current = true; // Set visibility to true without causing re-render
+            }
+
+            if (steadyCoinRef.current && coinBackgroundRef.current) {
+                coinBackgroundRef.current!.visible = steadyCoinRef.current!.visible;
+            }
+
+            if (coinBackgroundRef.current && coinBackgroundRef.current!.visible) {
+                if (textRef.current) {
+                    textRef.current!.visible = true;
+                }
+            } else {
+                if (textRef.current) {
+                    textRef.current!.visible = false;
+                }
+            }
 
             // Trigger coin arc animation after fire throw
             if (fireThrown && !coinAnimating) {
@@ -331,20 +366,44 @@ const ParallaxBackground: FC = () => {
                 anchor={{ x: 1, y: 0 }} // Anchor to the right side for flipping
                 scale={{ x: -1, y: 1 }} // Flip horizontally using scale
             />
-            <Sprite
-                ref={coinRef}
-                image="/assets/Coin.png"
-                x={1250}
-                y={2500}
-                width={150}
-                height={150}
-                visible={false}
+            <Graphics
+                ref={coinBackgroundRef}
+                draw={(g) => {
+                    g.clear();
+                    g.beginFill(0xbbbbbb, 0.8); // Update color to #bbbbbb
+                    g.drawRoundedRect(1830, 1190, 400, 170, 20); // Increase width to 200 (or your desired width)
+                    g.endFill();
+                }}
+                visible={false} // Initially hidden
+            />
+            <Text
+                ref={textRef}
+                text='100'
+                x={1870}
+                y={1240}
+                style={
+                    new TextStyle({
+                        align: 'center',
+                        fill: ['#fff'],
+                        fontSize: 60,
+                        fontFamily: 'Keons',
+                    })
+                }
             />
             <Sprite
                 ref={steadyCoinRef}
                 image="/assets/Coin.png"
                 x={2000} // Final position after animation
                 y={1200}
+                width={150}
+                height={150}
+                visible={false}
+            />
+            <Sprite
+                ref={coinRef}
+                image="/assets/Coin.png"
+                x={1250}
+                y={2500}
                 width={150}
                 height={150}
                 visible={false}
