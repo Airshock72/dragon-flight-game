@@ -6,6 +6,7 @@ import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
 import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
 import FireThrowAnimation from './FireThrowAnimation.tsx'
 import {TextStyle} from 'pixi.js'
+import SparklesAnimation from './SparklesAnimation.tsx'
 
 const ParallaxBackground: FC = () => {
     const scoreRef = useRef(0); // Initialize score as a ref
@@ -30,6 +31,7 @@ const ParallaxBackground: FC = () => {
     const coinBackgroundRef = useRef<PIXI.Graphics | null>(null); // Ref for the gray background
     const coinVisibleRef = useRef(false); // Ref to control visibility without causing re-render
     const textRef = useRef<PIXI.Text | null>(null);
+    const sparkleRef = useRef<PIXI.AnimatedSprite | null>(null);
 
     useEffect(() => {
         const loadFont = async () => {
@@ -418,6 +420,7 @@ const ParallaxBackground: FC = () => {
                 height={150}
                 visible={false}
             />
+            <SparklesAnimation sparkleRef={sparkleRef} />
             <Sprite
                 ref={iceCubeRef}
                 image="/assets/Ice_Cube.png"
