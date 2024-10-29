@@ -47,42 +47,46 @@ const ParallaxBackground: FC = () => {
         const coinArcDuration = 50 // Duration for coin arc animation
         let coinArcStep = 0
         let coinAnimating = false // Track if coin animation is running
-        let coinAnimationCompleted = false // Track if coin animation has already completed
 
         ticker.add(() => {
-            if (destroyCubeRef.current!.visible && !coinAnimating && !coinAnimationCompleted) {
-                coinAnimating = true
-                coinArcStep = 0
-                coinRef.current!.x = 1250 // Initial position (if needed)
-                coinRef.current!.y = 2500
-                coinRef.current!.visible = true
+
+            // Trigger coin arc animation after fire throw
+            if (fireThrown && !coinAnimating) {
+                coinAnimating = true;
+                coinArcStep = 0;
+                coinRef.current!.x = 1250; // Initial position (if needed)
+                coinRef.current!.y = 2500;
+                coinRef.current!.visible = true;
             }
+            // if (destroyCubeRef.current!.visible && !coinAnimating) {
+            //     coinAnimating = true
+            //     coinArcStep = 0
+            //     coinRef.current!.x = 1250 // Initial position (if needed)
+            //     coinRef.current!.y = 2500
+            //     coinRef.current!.visible = true
+            // }
 
 
+            // Coin animation logic
             if (coinAnimating && coinArcStep <= coinArcDuration) {
-                const t = coinArcStep / coinArcDuration
-                const startX = 1250
-                const startY = 2500
-                const endX = 2000 // Set upper right corner target
-                const endY = 1200
+                const t = coinArcStep / coinArcDuration;
+                const startX = 1250;
+                const startY = 2500;
+                const endX = 2000; // Set upper right corner target
+                const endY = 1200;
 
                 // Calculate arc path using a quadratic Bezier curve
-                const controlX = (startX + endX) / 2
-                const controlY = startY - 300 // Height of the arc (adjust as needed)
+                const controlX = (startX + endX) / 2;
+                const controlY = startY - 300; // Height of the arc (adjust as needed)
 
-                const x = (1 - t) * (1 - t) * startX + 2 * (1 - t) * t * controlX + t * t * endX
-                const y = (1 - t) * (1 - t) * startY + 2 * (1 - t) * t * controlY + t * t * endY
+                const x = (1 - t) * (1 - t) * startX + 2 * (1 - t) * t * controlX + t * t * endX;
+                const y = (1 - t) * (1 - t) * startY + 2 * (1 - t) * t * controlY + t * t * endY;
 
-                coinRef.current!.x = x
-                coinRef.current!.y = y
-                coinArcStep++
-
-                // Hide coin once the arc animation finishes
-                if (coinArcStep > coinArcDuration) {
-                    coinAnimating = false
-                    coinAnimationCompleted = true // Prevent future animations
-                    coinRef.current!.visible = false
-                }
+                coinRef.current!.x = x;
+                coinRef.current!.y = y;
+                coinArcStep++;
+            } else if (coinArcStep > coinArcDuration) {
+                coinAnimating = false; // Reset coin animation flag once complete
             }
 
 
