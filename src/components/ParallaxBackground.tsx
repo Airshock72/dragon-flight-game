@@ -8,6 +8,8 @@ import FireThrowAnimation from './FireThrowAnimation.tsx'
 import {TextStyle} from 'pixi.js'
 
 const ParallaxBackground: FC = () => {
+    const scoreRef = useRef(0); // Initialize score as a ref
+    const scoreUpdated = useRef(false); // Flag to prevent repeated increment
     const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
     const iceCubeRef = useRef<PIXI.Sprite | null>(null)
     const destroyCubeRef = useRef<PIXI.AnimatedSprite | null>(null)
@@ -93,6 +95,7 @@ const ParallaxBackground: FC = () => {
                 coinRef.current!.x = 1250; // Initial position
                 coinRef.current!.y = 2500;
                 coinRef.current!.visible = true; // Show coinRef initially
+                scoreUpdated.current = false; // Reset the score update flag for new animation
             }
 
 
@@ -113,10 +116,17 @@ const ParallaxBackground: FC = () => {
                 coinRef.current!.x = x;
                 coinRef.current!.y = y;
                 coinArcStep++;
-            } else if (coinArcStep > coinArcDuration) {
+            } else if (coinArcStep > coinArcDuration && !scoreUpdated.current) {
                 coinAnimating = false;
-                coinRef.current!.visible = false; // Hide coinRef after animation
-                steadyCoinRef.current!.visible = true; // Show steadyCoinRef at final position
+                coinRef.current!.visible = false;
+                steadyCoinRef.current!.visible = true;
+
+                scoreRef.current += 100; // Increment score only once
+                scoreUpdated.current = true; // Set the flag to prevent further increments
+
+                if (textRef.current) {
+                    textRef.current!.text = `${scoreRef.current}`; // Update the text directly
+                }
             }
 
 
@@ -378,7 +388,7 @@ const ParallaxBackground: FC = () => {
             />
             <Text
                 ref={textRef}
-                text='100'
+                text={`${scoreRef.current}`} // Initial score text
                 x={1870}
                 y={1240}
                 style={
