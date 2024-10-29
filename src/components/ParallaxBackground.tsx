@@ -23,6 +23,7 @@ const ParallaxBackground: FC = () => {
     const isAttacking = useRef(false)
     const fireRef = useRef<PIXI.AnimatedSprite | null>(null);
     const coinRef = useRef<PIXI.Sprite | null>(null); // New ref for Coin.png
+    const steadyCoinRef = useRef<PIXI.Sprite | null>(null); // New ref for Coin.png
 
     useEffect(() => {
         if (
@@ -54,20 +55,12 @@ const ParallaxBackground: FC = () => {
             if (fireThrown && !coinAnimating) {
                 coinAnimating = true;
                 coinArcStep = 0;
-                coinRef.current!.x = 1250; // Initial position (if needed)
+                coinRef.current!.x = 1250; // Initial position
                 coinRef.current!.y = 2500;
-                coinRef.current!.visible = true;
+                coinRef.current!.visible = true; // Show coinRef initially
             }
-            // if (destroyCubeRef.current!.visible && !coinAnimating) {
-            //     coinAnimating = true
-            //     coinArcStep = 0
-            //     coinRef.current!.x = 1250 // Initial position (if needed)
-            //     coinRef.current!.y = 2500
-            //     coinRef.current!.visible = true
-            // }
 
 
-            // Coin animation logic
             if (coinAnimating && coinArcStep <= coinArcDuration) {
                 const t = coinArcStep / coinArcDuration;
                 const startX = 1250;
@@ -86,7 +79,9 @@ const ParallaxBackground: FC = () => {
                 coinRef.current!.y = y;
                 coinArcStep++;
             } else if (coinArcStep > coinArcDuration) {
-                coinAnimating = false; // Reset coin animation flag once complete
+                coinAnimating = false;
+                coinRef.current!.visible = false; // Hide coinRef after animation
+                steadyCoinRef.current!.visible = true; // Show steadyCoinRef at final position
             }
 
 
@@ -341,6 +336,15 @@ const ParallaxBackground: FC = () => {
                 image="/assets/Coin.png"
                 x={1250}
                 y={2500}
+                width={150}
+                height={150}
+                visible={false}
+            />
+            <Sprite
+                ref={steadyCoinRef}
+                image="/assets/Coin.png"
+                x={2000} // Final position after animation
+                y={1200}
                 width={150}
                 height={150}
                 visible={false}
