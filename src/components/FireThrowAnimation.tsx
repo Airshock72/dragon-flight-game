@@ -27,8 +27,8 @@ const FireThrowAnimation = ({ fireRef }) => {
             textures={fireFrames}
             initialFrame={0}
             animationSpeed={0.9}
-            x={550}
-            y={1750}
+            x={560}
+            y={1740}
             width={frameWidth} // Reduce width to 50% of the original
             height={frameHeight} // Reduce height to 50% of the original
             loop={false}

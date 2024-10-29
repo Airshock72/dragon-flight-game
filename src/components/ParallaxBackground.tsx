@@ -380,7 +380,7 @@ const ParallaxBackground: FC = () => {
                 ref={coinBackgroundRef}
                 draw={(g) => {
                     g.clear();
-                    g.beginFill(0xbbbbbb, 0.8); // Update color to #bbbbbb
+                    g.beginFill(0x1b3284, 0.3); // Update color to #bbbbbb
                     g.drawRoundedRect(1830, 1190, 400, 170, 20); // Increase width to 200 (or your desired width)
                     g.endFill();
                 }}
