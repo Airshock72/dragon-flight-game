@@ -7,6 +7,7 @@ import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
 import FireThrowAnimation from './FireThrowAnimation.tsx'
 import {TextStyle} from 'pixi.js'
 import SparklesAnimation from './SparklesAnimation.tsx'
+import LightningAnimation from './LightningAnimation.tsx'
 
 const ParallaxBackground: FC = () => {
     const scoreRef = useRef(0); // Initialize score as a ref
@@ -32,6 +33,7 @@ const ParallaxBackground: FC = () => {
     const coinVisibleRef = useRef(false); // Ref to control visibility without causing re-render
     const textRef = useRef<PIXI.Text | null>(null);
     const sparkleRef = useRef<PIXI.AnimatedSprite | null>(null);
+    const lightningRef = useRef<PIXI.AnimatedSprite | null>(null);
     const dragonDeathRef = useRef<PIXI.AnimatedSprite | null>(null);
 
     useEffect(() => {
@@ -87,6 +89,12 @@ const ParallaxBackground: FC = () => {
                         dragonDeathRef.current!.loop = false;
                         dragonDeathRef.current!.gotoAndPlay(0);
 
+                        // Start LightningAnimation synchronized with Dragon_Death
+                        if (lightningRef.current) {
+                            lightningRef.current!.visible = true;
+                            lightningRef.current!.gotoAndPlay(0);
+                        }
+
                         // Listen for the completion of Dragon_Death animation
                         dragonDeathRef.current!.onComplete = () => {
                             dragonDeathRef.current!.visible = false;
@@ -95,6 +103,10 @@ const ParallaxBackground: FC = () => {
                             if (dragonFlyRef.current) {
                                 dragonFlyRef.current!.visible = true;
                                 dragonFlyRef.current!.gotoAndPlay(0);
+                            }
+
+                            if (lightningRef.current) {
+                                lightningRef.current!.visible = false;
                             }
                         };
                     }
@@ -548,6 +560,7 @@ const ParallaxBackground: FC = () => {
                 loop={false}
                 visible={false}
             />
+            <LightningAnimation lightningRef={lightningRef} />
             <FireThrowAnimation fireRef={fireRef} />
             <Sprite
                 image="/assets/Uv.png"
