@@ -41,26 +41,45 @@ const ParallaxBackground: FC = () => {
     const button1Ref = useRef<PIXI.Graphics | null>(null);
     const button2Ref = useRef<PIXI.Graphics | null>(null);
     const textYRef = useRef(3480); // Initial y position for the Text component
-    const textRef = useRef<PIXI.Text | null>(null); // Reference to the Text component
+    const startButtonTextRef = useRef<PIXI.Text | null>(null); // Reference to the Text component
+    const buttonTextRef = useRef("START"); // Ref to hold button text
+    const button1ColorRef = useRef(0x802c16);
+    const button2ColorRef = useRef(0xd75e27);
 
     const handlePointerDown = () => {
-        if (button1Ref.current) {
-            button1Ref.current!.y += 10;
-        }
-        if (button2Ref.current) {
-            button2Ref.current!.y += 10;
-        }
+        // Adjust y positions
+        if (button1Ref.current) button1Ref.current!.y += 10;
+        if (button2Ref.current) button2Ref.current!.y += 10;
         textYRef.current += 10;
     };
 
     const handlePointerUp = () => {
+        // Adjust y positions back
+        if (button1Ref.current) button1Ref.current!.y -= 10;
+        if (button2Ref.current) button2Ref.current!.y -= 10;
+        textYRef.current -= 10;
+
+        // Toggle button text and color using refs directly
+        buttonTextRef.current = buttonTextRef.current === "START" ? "CASH OUT" : "START";
+        button1ColorRef.current = button1ColorRef.current === 0x802c16 ? 0x316433 : 0x802c16;
+        button2ColorRef.current = button2ColorRef.current === 0xd75e27 ? 0x72a639 : 0xd75e27;
+
+        // Update Text and Graphics directly to avoid re-rendering
+        if (startButtonTextRef.current) {
+            startButtonTextRef.current!.text = buttonTextRef.current;
+        }
         if (button1Ref.current) {
-            button1Ref.current!.y -= 10;
+            button1Ref.current!.clear();
+            button1Ref.current!.beginFill(button1ColorRef.current);
+            button1Ref.current!.drawRoundedRect(760, 3480, 630, 100, 40);
+            button1Ref.current!.endFill();
         }
         if (button2Ref.current) {
-            button2Ref.current!.y -= 10;
+            button2Ref.current!.clear();
+            button2Ref.current!.beginFill(button2ColorRef.current);
+            button2Ref.current!.drawRoundedRect(760, 3380, 630, 180, 40);
+            button2Ref.current!.endFill();
         }
-        textYRef.current -= 10;
     };
 
     useEffect(() => {
@@ -103,8 +122,8 @@ const ParallaxBackground: FC = () => {
 
         ticker.add(() => {
 
-            if (textRef.current) {
-                textRef.current!.y = textYRef.current;
+            if (startButtonTextRef.current) {
+                startButtonTextRef.current!.y = textYRef.current;
             }
 
             if (dragonAttackRef.current && fireRef.current) {
@@ -691,7 +710,7 @@ const ParallaxBackground: FC = () => {
                     ref={button1Ref}
                     draw={(g) => {
                         g.clear();
-                        g.beginFill(0x802c16);
+                        g.beginFill(button1ColorRef.current); // Initial button color
                         g.drawRoundedRect(760, 3480, 630, 100, 40);
                         g.endFill();
                     }}
@@ -700,22 +719,22 @@ const ParallaxBackground: FC = () => {
                     ref={button2Ref}
                     draw={(g) => {
                         g.clear();
-                        g.beginFill(0xd75e27);
+                        g.beginFill(button2ColorRef.current);
                         g.drawRoundedRect(760, 3380, 630, 180, 40);
                         g.endFill();
                     }}
                 />
                 <Text
-                    ref={textRef} // Reference to text
-                    text="START"
+                    ref={startButtonTextRef} // Reference to text
+                    text={buttonTextRef.current} // Initial button text
                     anchor={0.5} // Centers the text
                     x={1070} // Half of the button width (750)
-                    y={textYRef.current} // Initial y position
+                    y={3480} // Initial y position
                     style={
                         new PIXI.TextStyle({
                             fill: '#ffffff',
                             fontFamily: 'Keons',
-                            fontSize: 80, // Adjusted font size to match the uploaded image
+                            fontSize: 80,
                             fontWeight: 'bold',
                         })
                     }
