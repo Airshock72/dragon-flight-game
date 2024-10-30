@@ -45,6 +45,7 @@ const ParallaxBackground: FC = () => {
     const buttonTextRef = useRef("START"); // Ref to hold button text
     const button1ColorRef = useRef(0x802c16);
     const button2ColorRef = useRef(0xd75e27);
+    const hasStartedRef = useRef(false); // Track if START button was pressed
 
     const handlePointerDown = () => {
         // Adjust y positions
@@ -80,6 +81,9 @@ const ParallaxBackground: FC = () => {
             button2Ref.current!.drawRoundedRect(760, 3380, 630, 180, 40);
             button2Ref.current!.endFill();
         }
+
+        // Set hasStartedRef to true to allow Ice_Cube.png to appear
+        hasStartedRef.current = true;
     };
 
     useEffect(() => {
@@ -96,18 +100,18 @@ const ParallaxBackground: FC = () => {
     }, [])
 
     useEffect(() => {
-        if (
-            iceSpriteRefs.current.some(ref => ref.current === null)
-            || !waySprite1Ref.current
-            || !waySprite2Ref.current
-            || !iceSprite1Ref.current
-            || !iceCubeRef.current
-            || !brokenCube1Ref.current
-            || !brokenCube2Ref.current
-            || !cubeDestroyEffectRef.current
-            || !dragonFlyRef.current
-            || !dragonAttackRef.current
-        ) return
+        // if (
+        //     iceSpriteRefs.current.some(ref => ref.current === null)
+        //     || !waySprite1Ref.current
+        //     || !waySprite2Ref.current
+        //     || !iceSprite1Ref.current
+        //     || !iceCubeRef.current
+        //     || !brokenCube1Ref.current
+        //     || !brokenCube2Ref.current
+        //     || !cubeDestroyEffectRef.current
+        //     || !dragonFlyRef.current
+        //     || !dragonAttackRef.current
+        // ) return
 
         const ticker = new PIXI.Ticker()
         let iceCubeMovingRight = false; // Flag to track rightward movement
@@ -121,6 +125,90 @@ const ParallaxBackground: FC = () => {
         let coinAnimating = false // Track if coin animation is running
 
         ticker.add(() => {
+            // Background_Ice.png animation logic
+            if (iceSprite1Ref.current && iceSprite2Ref.current) {
+                (iceSprite1Ref.current as PIXI.Sprite).x -= 2;
+                (iceSprite2Ref.current as PIXI.Sprite).x -= 2;
+
+                if ((iceSprite1Ref.current as PIXI.Sprite).x <= -(iceSprite1Ref.current as PIXI.Sprite).width) {
+                    (iceSprite1Ref.current as PIXI.Sprite).x = (iceSprite2Ref.current as PIXI.Sprite).x + (iceSprite2Ref.current as PIXI.Sprite).width;
+                }
+                if ((iceSprite2Ref.current as PIXI.Sprite).x <= -(iceSprite2Ref.current as PIXI.Sprite).width) {
+                    (iceSprite2Ref.current as PIXI.Sprite).x = (iceSprite1Ref.current as PIXI.Sprite).x + (iceSprite1Ref.current as PIXI.Sprite).width;
+                }
+            }
+
+            // Way.png animation logic
+            if (waySprite1Ref.current && waySprite2Ref.current) {
+                (waySprite1Ref.current as PIXI.Sprite).x -= 15;
+                (waySprite2Ref.current as PIXI.Sprite).x -= 15;
+
+                if ((waySprite1Ref.current as PIXI.Sprite).x <= -(waySprite1Ref.current as PIXI.Sprite).width) {
+                    (waySprite1Ref.current as PIXI.Sprite).x = (waySprite2Ref.current as PIXI.Sprite).x + (waySprite2Ref.current as PIXI.Sprite).width;
+                }
+                if ((waySprite2Ref.current as PIXI.Sprite).x <= -(waySprite2Ref.current as PIXI.Sprite).width) {
+                    (waySprite2Ref.current as PIXI.Sprite).x = (waySprite1Ref.current as PIXI.Sprite).x + (waySprite1Ref.current as PIXI.Sprite).width;
+                }
+            }
+
+            // Ice_01.png, Ice_02.png, Ice_03.png animation logic
+            iceSpriteRefs.current.forEach(iceRef => {
+                if (iceRef.current) {
+                    (iceRef.current as PIXI.Sprite).x -= 15;
+
+                    if ((iceRef.current as PIXI.Sprite).x <= -(iceRef.current as PIXI.Sprite).width) {
+                        const maxX = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0));
+                        (iceRef.current as PIXI.Sprite).x = maxX + (iceRef.current as PIXI.Sprite).width + 3500; // Add spacing
+                    }
+                }
+            });
+
+            if (!hasStartedRef.current) {
+                // Do not show or update Ice_Cube.png until START is pressed
+                if (iceCubeRef.current) iceCubeRef.current!.visible = false;
+                return;
+            }
+
+            // Now add the rest of your ticker code, allowing Ice_Cube.png updates
+            if (iceCubeRef.current) {
+                iceCubeRef.current!.visible = true;
+                iceCubeRef.current!.x -= 15;
+                const isVisible = iceCubeRef.current!.x > 1500 - iceCubeRef.current!.width / 2;
+                iceCubeRef.current!.visible = isVisible;
+
+                if (destroyCubeRef.current) {
+                    if (!isVisible && !hasPlayedDestroyAnimation.current) {
+                        if (!isVisible && !hasPlayedDestroyAnimation.current) {
+
+                            if (brokenCube1Ref.current) {
+                                (brokenCube1Ref.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x;
+                                (brokenCube1Ref.current as PIXI.Sprite).y = 2650; // Set Y position to ensure the same starting point
+                                (brokenCube1Ref.current as PIXI.Sprite).visible = true;
+                            }
+
+                            if (brokenCube2Ref.current) {
+                                // Position `Ice_Cube_Up_Broken.png` to the right of `Ice_Cube.png`
+                                (brokenCube2Ref.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x + (iceCubeRef.current as PIXI.Sprite).width;
+                                (brokenCube2Ref.current as PIXI.Sprite).y = 2650; // Set Y position to ensure the same starting point
+                                (brokenCube2Ref.current as PIXI.Sprite).visible = true;
+                            }
+
+                            // Align the destroy animation x-position with iceCubeRef x-position
+                            (destroyCubeRef.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x - 230;
+                            (destroyCubeRef.current as PIXI.Sprite).visible = true;
+                            (destroyCubeRef.current as PIXI.AnimatedSprite).gotoAndPlay(0);
+                            cubeDestroyEffectRef.current!.gotoAndPlay(0);
+                            hasPlayedDestroyAnimation.current = true;
+                            arcStep = 0; // Reset arcStep for arc animation
+                        }
+                    }
+                }
+
+                if (iceCubeRef.current!.x <= -(iceCubeRef.current!.width)) {
+                    iceCubeRef.current!.x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + iceCubeRef.current!.width - 1000;
+                    hasPlayedDestroyAnimation.current = false;
+                }
+            }
 
             if (startButtonTextRef.current) {
                 startButtonTextRef.current!.y = textYRef.current;
@@ -253,17 +341,6 @@ const ParallaxBackground: FC = () => {
                 }
             }
 
-            iceSpriteRefs.current.forEach(iceRef => {
-                if (iceRef.current) {
-                    (iceRef.current as PIXI.Sprite).x -= 15; // Move the ice sprites to the left
-
-                    // Reset position once completely off-screen
-                    if ((iceRef.current as PIXI.Sprite).x <= -(iceRef.current as PIXI.Sprite).width) {
-                        (iceRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + (iceRef.current as PIXI.Sprite).width + 3500; // Adding spacing between them
-                    }
-                }
-            })
-
             if (dragonAttackRef.current && fireRef.current) {
                 const currentFrame = dragonAttackRef.current!.currentFrame!;
                 if (currentFrame === 14 && !fireThrown) {
@@ -292,37 +369,6 @@ const ParallaxBackground: FC = () => {
                     iceCubeMovingRight = true;
                 }
 
-
-                (iceCubeRef.current as PIXI.Sprite).x -= 15;
-                const isVisible = (iceCubeRef.current as PIXI.Sprite).x > 1500 - (iceCubeRef.current as PIXI.Sprite).width / 2;
-                (iceCubeRef.current as PIXI.Sprite).visible = isVisible;
-
-                if (destroyCubeRef.current) {
-                    if (!isVisible && !hasPlayedDestroyAnimation.current) {
-
-                        if (brokenCube1Ref.current) {
-                            (brokenCube1Ref.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x;
-                            (brokenCube1Ref.current as PIXI.Sprite).y = 2650; // Set Y position to ensure the same starting point
-                            (brokenCube1Ref.current as PIXI.Sprite).visible = true;
-                        }
-
-                        if (brokenCube2Ref.current) {
-                            // Position `Ice_Cube_Up_Broken.png` to the right of `Ice_Cube.png`
-                            (brokenCube2Ref.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x + (iceCubeRef.current as PIXI.Sprite).width;
-                            (brokenCube2Ref.current as PIXI.Sprite).y = 2650; // Set Y position to ensure the same starting point
-                            (brokenCube2Ref.current as PIXI.Sprite).visible = true;
-                        }
-
-                        // Align the destroy animation x-position with iceCubeRef x-position
-                        (destroyCubeRef.current as PIXI.Sprite).x = (iceCubeRef.current as PIXI.Sprite).x - 230;
-                        (destroyCubeRef.current as PIXI.Sprite).visible = true;
-                        (destroyCubeRef.current as PIXI.AnimatedSprite).gotoAndPlay(0);
-                        cubeDestroyEffectRef.current!.gotoAndPlay(0);
-                        hasPlayedDestroyAnimation.current = true;
-                        arcStep = 0; // Reset arcStep for arc animation
-                    }
-                }
-
                 if ((iceCubeRef.current as PIXI.Sprite).x <= -(iceCubeRef.current as PIXI.Sprite).width) {
                     (iceCubeRef.current as PIXI.Sprite).x = Math.max(...iceSpriteRefs.current.map(sprite => sprite.current?.x ?? 0)) + (iceCubeRef.current as PIXI.Sprite).width - 1000;
                     hasPlayedDestroyAnimation.current = false;
@@ -348,38 +394,6 @@ const ParallaxBackground: FC = () => {
                             if ((ref.current as PIXI.Sprite).x <= -(ref.current as PIXI.Sprite).width) (ref.current as PIXI.Sprite).visible = false
                         }
                     });
-                }
-            }
-
-            if (iceSprite1Ref.current && iceSprite2Ref.current) {
-                // Move both ice backgrounds to the left
-                (iceSprite1Ref.current as PIXI.Sprite).x -= 2;
-                (iceSprite2Ref.current as PIXI.Sprite).x -= 2
-
-                // When the first sprite is completely off-screen, reset its position to the right of the second sprite
-                if ((iceSprite1Ref.current as PIXI.Sprite).x <= -(iceSprite1Ref.current as PIXI.Sprite).width) {
-                    (iceSprite1Ref.current as PIXI.Sprite).x = (iceSprite2Ref.current as PIXI.Sprite).x + (iceSprite2Ref.current as PIXI.Sprite).width
-                }
-
-                // When the second sprite is completely off-screen, reset its position to the right of the first sprite
-                if ((iceSprite2Ref.current as PIXI.Sprite).x <= -(iceSprite2Ref.current as PIXI.Sprite).width) {
-                    (iceSprite2Ref.current as PIXI.Sprite).x = (iceSprite1Ref.current as PIXI.Sprite).x + (iceSprite1Ref.current as PIXI.Sprite).width
-                }
-            }
-
-            if (waySprite1Ref.current && waySprite2Ref.current) {
-                // Move both way backgrounds to the left at a slower speed
-                (waySprite1Ref.current as PIXI.Sprite).x -= 15; // Slower speed for Way.png
-                (waySprite2Ref.current as PIXI.Sprite).x -= 15
-
-                // When the first sprite is completely off-screen, reset its position to the right of the second sprite
-                if ((waySprite1Ref.current as PIXI.Sprite).x <= -(waySprite1Ref.current as PIXI.Sprite).width) {
-                    (waySprite1Ref.current as PIXI.Sprite).x = (waySprite2Ref.current as PIXI.Sprite).x + (waySprite2Ref.current as PIXI.Sprite).width
-                }
-
-                // When the second sprite is completely off-screen, reset its position to the right of the first sprite
-                if ((waySprite2Ref.current as PIXI.Sprite).x <= -(waySprite2Ref.current as PIXI.Sprite).width) {
-                    (waySprite2Ref.current as PIXI.Sprite).x = (waySprite1Ref.current as PIXI.Sprite).x + (waySprite1Ref.current as PIXI.Sprite).width
                 }
             }
 
@@ -546,6 +560,7 @@ const ParallaxBackground: FC = () => {
                 text={`${scoreRef.current}`} // Initial score text
                 x={1870}
                 y={1240}
+                visible={false}
                 style={
                     new TextStyle({
                         align: 'center',
