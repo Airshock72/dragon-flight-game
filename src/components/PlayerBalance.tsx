@@ -1,15 +1,12 @@
-import {FC, useState} from 'react'
 import {Text} from '@pixi/react'
 import {TextStyle} from 'pixi.js'
 
-const PlayerBalance: FC = () => {
-    const [coinBalance, setCoinBalance] = useState(200)
-    const [flashBalance, setFlashBalance] = useState(100)
+const PlayerBalance = ({ coinBalanceRef, flashBalanceRef, flashBalanceTextRef  }) => {
 
     return (
         <>
             <Text
-                text={`${coinBalance}`}
+                text={`${coinBalanceRef.current}`}
                 x={290}
                 y={3560}
                 style={
@@ -22,7 +19,8 @@ const PlayerBalance: FC = () => {
                 }
             />
             <Text
-                text={`${flashBalance}`}
+                ref={flashBalanceTextRef} // Reference to the text to update
+                text={`${flashBalanceRef.current}`} // Set initial balance
                 x={280}
                 y={3350}
                 style={

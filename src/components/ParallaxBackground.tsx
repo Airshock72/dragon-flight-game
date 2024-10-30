@@ -35,6 +35,9 @@ const ParallaxBackground: FC = () => {
     const sparkleRef = useRef<PIXI.AnimatedSprite | null>(null);
     const lightningRef = useRef<PIXI.AnimatedSprite | null>(null);
     const dragonDeathRef = useRef<PIXI.AnimatedSprite | null>(null);
+    const coinBalanceRef = useRef(500);
+    const flashBalanceRef = useRef(1200); // Use ref instead of state
+    const flashBalanceTextRef = useRef<PIXI.Text | null>(null); // Ref for the Text component
 
     useEffect(() => {
         const loadFont = async () => {
@@ -76,7 +79,31 @@ const ParallaxBackground: FC = () => {
 
         ticker.add(() => {
 
-            if (scoreRef.current === 100 && !dragonDeathTriggered) {
+            if (dragonAttackRef.current && fireRef.current) {
+                const currentFrame = dragonAttackRef.current!.currentFrame;
+
+                // Detect frame when fire animation should start
+                if (currentFrame === 14 && !fireThrown) {
+                    fireThrown = true;
+                    fireRef.current!.visible = true;
+                    fireRef.current!.gotoAndPlay(0);
+
+                    // Deduct 5 points from flashBalanceRef and update text directly
+                    flashBalanceRef.current -= 5;
+
+                    // Ensure text updates with the new value
+                    if (flashBalanceTextRef.current) {
+                        flashBalanceTextRef.current!.text = `${flashBalanceRef.current}`;
+                    }
+                }
+
+                // Reset fireThrown when dragonAttack finishes
+                if (currentFrame >= dragonAttackRef.current!.totalFrames - 1) {
+                    fireThrown = false;
+                }
+            }
+
+            if (scoreRef.current === 300 && !dragonDeathTriggered) {
                 dragonDeathTriggered = true; // Prevent re-triggering
 
                 // Set timeout for 3 seconds before playing Dragon_Death animation
@@ -113,7 +140,6 @@ const ParallaxBackground: FC = () => {
                 }, 3000);
             }
 
-
             if (coinRef.current && destroyCubeRef.current!.visible) {
                 coinVisibleRef.current = true; // Set visibility to true without causing re-render
             }
@@ -142,7 +168,6 @@ const ParallaxBackground: FC = () => {
                 coinRef.current!.visible = true; // Show coinRef initially
                 scoreUpdated.current = false; // Reset the score update flag for new animation
             }
-
 
             if (coinAnimating && coinArcStep <= coinArcDuration) {
                 const t = coinArcStep / coinArcDuration;
@@ -601,7 +626,7 @@ const ParallaxBackground: FC = () => {
                 width={2160}
                 height={3840}
             />
-            <PlayerBalance />
+            <PlayerBalance flashBalanceRef={flashBalanceRef} coinBalanceRef={coinBalanceRef} flashBalanceTextRef={flashBalanceTextRef} />
         </Stage>
     )
 }
