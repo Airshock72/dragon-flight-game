@@ -38,9 +38,10 @@ const ParallaxBackground: FC = () => {
     const coinBalanceRef = useRef(500);
     const flashBalanceRef = useRef(1200); // Use ref instead of state
     const flashBalanceTextRef = useRef<PIXI.Text | null>(null); // Ref for the Text component
-
     const button1Ref = useRef<PIXI.Graphics | null>(null);
     const button2Ref = useRef<PIXI.Graphics | null>(null);
+    const textYRef = useRef(3480); // Initial y position for the Text component
+    const textRef = useRef<PIXI.Text | null>(null); // Reference to the Text component
 
     const handlePointerDown = () => {
         if (button1Ref.current) {
@@ -49,6 +50,7 @@ const ParallaxBackground: FC = () => {
         if (button2Ref.current) {
             button2Ref.current!.y += 10;
         }
+        textYRef.current += 10;
     };
 
     const handlePointerUp = () => {
@@ -58,6 +60,7 @@ const ParallaxBackground: FC = () => {
         if (button2Ref.current) {
             button2Ref.current!.y -= 10;
         }
+        textYRef.current -= 10;
     };
 
     useEffect(() => {
@@ -99,6 +102,10 @@ const ParallaxBackground: FC = () => {
         let coinAnimating = false // Track if coin animation is running
 
         ticker.add(() => {
+
+            if (textRef.current) {
+                textRef.current!.y = textYRef.current;
+            }
 
             if (dragonAttackRef.current && fireRef.current) {
                 const currentFrame = dragonAttackRef.current!.currentFrame;
@@ -699,10 +706,11 @@ const ParallaxBackground: FC = () => {
                     }}
                 />
                 <Text
+                    ref={textRef} // Reference to text
                     text="START"
                     anchor={0.5} // Centers the text
                     x={1070} // Half of the button width (750)
-                    y={3480} // Half of the button height (250)
+                    y={textYRef.current} // Initial y position
                     style={
                         new PIXI.TextStyle({
                             fill: '#ffffff',
