@@ -1,6 +1,6 @@
 import { FC, MutableRefObject, useEffect, useRef } from 'react'
 import * as PIXI from 'pixi.js'
-import {Sprite, Stage, AnimatedSprite, Graphics, Text} from '@pixi/react'
+import {Sprite, Stage, AnimatedSprite, Graphics, Text, Container} from '@pixi/react'
 import PlayerBalance from './PlayerBalance.tsx'
 import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
 import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
@@ -504,7 +504,7 @@ const ParallaxBackground: FC = () => {
                         align: 'center',
                         fill: ['#fff'],
                         fontSize: 60,
-                        fontFamily: 'Keons',
+                        fontFamily: 'Keons'
                     })
                 }
             />
@@ -627,6 +627,59 @@ const ParallaxBackground: FC = () => {
                 height={3840}
             />
             <PlayerBalance flashBalanceRef={flashBalanceRef} coinBalanceRef={coinBalanceRef} flashBalanceTextRef={flashBalanceTextRef} />
+            <Container
+                eventMode='dynamic'
+                cursor="pointer"
+                buttonMode={true}
+            >
+                <Graphics
+                    draw={g => {
+                        g.clear()
+
+                        g.beginFill(0x342a69);
+                        g.drawRoundedRect(600, 3270, 950, 450, 20);
+                        g.endFill();
+
+                        g.beginFill(0x150f3b);
+                        g.drawRoundedRect(700, 3480, 750, 180, 40);
+                        g.endFill();
+
+                        g.beginFill(0x7b72db);
+                        g.drawRoundedRect(700, 3480, 750, 150, 40);
+                        g.endFill();
+
+                        g.beginFill(0x3e3773);
+                        g.drawRoundedRect(700, 3480, 750, 140, 40);
+                        g.endFill();
+
+                        g.beginFill(0x2f2956);
+                        g.drawRoundedRect(740, 3480, 680, 120, 40);
+                        g.endFill();
+
+                        g.beginFill(0x802c16);
+                        g.drawRoundedRect(760, 3480, 630, 100, 40);
+                        g.endFill();
+
+                        g.beginFill(0xd75e27);
+                        g.drawRoundedRect(760, 3380, 630, 180, 40);
+                        g.endFill();
+                    }}
+                />
+                <Text
+                    text="START"
+                    anchor={0.5} // Centers the text
+                    x={1070} // Half of the button width (750)
+                    y={3480} // Half of the button height (250)
+                    style={
+                        new PIXI.TextStyle({
+                            fill: '#ffffff',
+                            fontFamily: 'Keons',
+                            fontSize: 80, // Adjusted font size to match the uploaded image
+                            fontWeight: 'bold',
+                        })
+                    }
+                />
+            </Container>
         </Stage>
     )
 }
