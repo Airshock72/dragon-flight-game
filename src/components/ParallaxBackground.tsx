@@ -32,6 +32,7 @@ const ParallaxBackground: FC = () => {
     const coinVisibleRef = useRef(false); // Ref to control visibility without causing re-render
     const textRef = useRef<PIXI.Text | null>(null);
     const sparkleRef = useRef<PIXI.AnimatedSprite | null>(null);
+    const dragonDeathRef = useRef<PIXI.AnimatedSprite | null>(null);
 
     useEffect(() => {
         const loadFont = async () => {
@@ -65,12 +66,41 @@ const ParallaxBackground: FC = () => {
         let fireThrown = false; // Track if fire animation has been triggered
         const arcDuration = 30; // Adjust for arc animation speed
         let arcStep = 0;
+        let dragonDeathTriggered = false; // Flag to trigger dragon death animation only once
 
         const coinArcDuration = 50 // Duration for coin arc animation
         let coinArcStep = 0
         let coinAnimating = false // Track if coin animation is running
 
         ticker.add(() => {
+
+            if (scoreRef.current === 300 && !dragonDeathTriggered) {
+                dragonDeathTriggered = true; // Prevent re-triggering
+
+                // Set timeout for 3 seconds before playing Dragon_Death animation
+                setTimeout(() => {
+                    if (dragonFlyRef.current) {
+                        dragonFlyRef.current!.visible = false;
+                    }
+                    if (dragonDeathRef.current) {
+                        dragonDeathRef.current!.visible = true;
+                        dragonDeathRef.current!.loop = false;
+                        dragonDeathRef.current!.gotoAndPlay(0);
+
+                        // Listen for the completion of Dragon_Death animation
+                        dragonDeathRef.current!.onComplete = () => {
+                            dragonDeathRef.current!.visible = false;
+
+                            // Optional: Show Dragon_Fly again
+                            if (dragonFlyRef.current) {
+                                dragonFlyRef.current!.visible = true;
+                                dragonFlyRef.current!.gotoAndPlay(0);
+                            }
+                        };
+                    }
+                }, 3000);
+            }
+
 
             if (coinRef.current && destroyCubeRef.current!.visible) {
                 coinVisibleRef.current = true; // Set visibility to true without causing re-render
@@ -84,7 +114,8 @@ const ParallaxBackground: FC = () => {
                 if (textRef.current) {
                     textRef.current!.visible = true;
                 }
-            } else {
+            }
+            else {
                 if (textRef.current) {
                     textRef.current!.visible = false;
                 }
@@ -118,7 +149,8 @@ const ParallaxBackground: FC = () => {
                 coinRef.current!.x = x;
                 coinRef.current!.y = y;
                 coinArcStep++;
-            } else if (coinArcStep > coinArcDuration && !scoreUpdated.current) {
+            }
+            else if (coinArcStep > coinArcDuration && !scoreUpdated.current) {
                 coinAnimating = false;
                 coinRef.current!.visible = false;
                 steadyCoinRef.current!.visible = true;
@@ -136,7 +168,6 @@ const ParallaxBackground: FC = () => {
                     textRef.current!.text = `${scoreRef.current}`; // Update the text directly
                 }
             }
-
 
             iceSpriteRefs.current.forEach(iceRef => {
                 if (iceRef.current) {
@@ -494,6 +525,26 @@ const ParallaxBackground: FC = () => {
                 y={1370}
                 width={(6656 / 4) * 0.5}
                 height={(8864 / 8) * 0.5}
+                loop={false}
+                visible={false}
+            />
+            <AnimatedSprite
+                ref={dragonDeathRef}
+                textures={Array.from({ length: 32 }, (_, index) => {
+                    const row = Math.floor(index / 4);
+                    const col = index % 4;
+                    return new PIXI.Texture(
+                        PIXI.BaseTexture.from('/assets/dragon_animation/Dragon_Death.png'),
+                        new PIXI.Rectangle(col * (6080 / 4), row * (7536 / 8), 6080 / 4, 7536 / 8)
+                    );
+                })}
+                isPlaying={true}
+                initialFrame={0}
+                animationSpeed={0.5}
+                x={5}
+                y={1500}
+                width={(6080 / 4) * 0.5}
+                height={(7536 / 8) * 0.5}
                 loop={false}
                 visible={false}
             />
