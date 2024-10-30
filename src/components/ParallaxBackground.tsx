@@ -31,13 +31,34 @@ const ParallaxBackground: FC = () => {
     const steadyCoinRef = useRef<PIXI.Sprite | null>(null); // New ref for Coin.png
     const coinBackgroundRef = useRef<PIXI.Graphics | null>(null); // Ref for the gray background
     const coinVisibleRef = useRef(false); // Ref to control visibility without causing re-render
-    const textRef = useRef<PIXI.Text | null>(null);
+    const coinNumberRef = useRef<PIXI.Text | null>(null);
     const sparkleRef = useRef<PIXI.AnimatedSprite | null>(null);
     const lightningRef = useRef<PIXI.AnimatedSprite | null>(null);
     const dragonDeathRef = useRef<PIXI.AnimatedSprite | null>(null);
     const coinBalanceRef = useRef(500);
     const flashBalanceRef = useRef(1200); // Use ref instead of state
     const flashBalanceTextRef = useRef<PIXI.Text | null>(null); // Ref for the Text component
+
+    const button1Ref = useRef<PIXI.Graphics | null>(null);
+    const button2Ref = useRef<PIXI.Graphics | null>(null);
+
+    const handlePointerDown = () => {
+        if (button1Ref.current) {
+            button1Ref.current!.y += 10;
+        }
+        if (button2Ref.current) {
+            button2Ref.current!.y += 10;
+        }
+    };
+
+    const handlePointerUp = () => {
+        if (button1Ref.current) {
+            button1Ref.current!.y -= 10;
+        }
+        if (button2Ref.current) {
+            button2Ref.current!.y -= 10;
+        }
+    };
 
     useEffect(() => {
         const loadFont = async () => {
@@ -149,13 +170,13 @@ const ParallaxBackground: FC = () => {
             }
 
             if (coinBackgroundRef.current && coinBackgroundRef.current!.visible) {
-                if (textRef.current) {
-                    textRef.current!.visible = true;
+                if (coinNumberRef.current) {
+                    coinNumberRef.current!.visible = true;
                 }
             }
             else {
-                if (textRef.current) {
-                    textRef.current!.visible = false;
+                if (coinNumberRef.current) {
+                    coinNumberRef.current!.visible = false;
                 }
             }
 
@@ -201,8 +222,8 @@ const ParallaxBackground: FC = () => {
                 scoreRef.current += 100; // Increment score only once
                 scoreUpdated.current = true; // Set the flag to prevent further increments
 
-                if (textRef.current) {
-                    textRef.current!.text = `${scoreRef.current}`; // Update the text directly
+                if (coinNumberRef.current) {
+                    coinNumberRef.current!.text = `${scoreRef.current}`; // Update the text directly
                 }
             }
 
@@ -383,8 +404,8 @@ const ParallaxBackground: FC = () => {
                     coinRef.current!.visible = false;
                 }
 
-                if (textRef.current) {
-                    textRef.current!.visible = false;
+                if (coinNumberRef.current) {
+                    coinNumberRef.current!.visible = false;
                 }
 
                 if (coinBackgroundRef.current) {
@@ -495,7 +516,7 @@ const ParallaxBackground: FC = () => {
                 visible={false} // Initially hidden
             />
             <Text
-                ref={textRef}
+                ref={coinNumberRef}
                 text={`${scoreRef.current}`} // Initial score text
                 x={1870}
                 y={1240}
@@ -631,6 +652,8 @@ const ParallaxBackground: FC = () => {
                 eventMode='dynamic'
                 cursor="pointer"
                 buttonMode={true}
+                pointerdown={handlePointerDown}
+                pointerup={handlePointerUp}
             >
                 <Graphics
                     draw={g => {
@@ -655,11 +678,21 @@ const ParallaxBackground: FC = () => {
                         g.beginFill(0x2f2956);
                         g.drawRoundedRect(740, 3480, 680, 120, 40);
                         g.endFill();
-
+                    }}
+                />
+                <Graphics
+                    ref={button1Ref}
+                    draw={(g) => {
+                        g.clear();
                         g.beginFill(0x802c16);
                         g.drawRoundedRect(760, 3480, 630, 100, 40);
                         g.endFill();
-
+                    }}
+                />
+                <Graphics
+                    ref={button2Ref}
+                    draw={(g) => {
+                        g.clear();
                         g.beginFill(0xd75e27);
                         g.drawRoundedRect(760, 3380, 630, 180, 40);
                         g.endFill();
