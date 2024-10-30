@@ -76,7 +76,7 @@ const ParallaxBackground: FC = () => {
 
         ticker.add(() => {
 
-            if (scoreRef.current === 300 && !dragonDeathTriggered) {
+            if (scoreRef.current === 100 && !dragonDeathTriggered) {
                 dragonDeathTriggered = true; // Prevent re-triggering
 
                 // Set timeout for 3 seconds before playing Dragon_Death animation
@@ -349,6 +349,40 @@ const ParallaxBackground: FC = () => {
                     dragonFlyRef.current!.gotoAndPlay(0);
                 }
             }
+
+            dragonDeathRef.current!.onComplete = () => {
+                dragonDeathRef.current!.visible = false;
+
+                // Hide steady coin, score text, and coin background
+                if (steadyCoinRef.current) {
+                    steadyCoinRef.current!.visible = false;
+                }
+
+                if (coinRef.current) {
+                    coinRef.current!.visible = false;
+                }
+
+                if (textRef.current) {
+                    textRef.current!.visible = false;
+                }
+
+                if (coinBackgroundRef.current) {
+                    coinBackgroundRef.current!.visible = false;
+                }
+
+                // Reset the score to 0
+                scoreRef.current = 0;
+
+                // Optional: Show Dragon_Fly again
+                if (dragonFlyRef.current) {
+                    dragonFlyRef.current!.visible = true;
+                    dragonFlyRef.current!.gotoAndPlay(0);
+                }
+
+                if (lightningRef.current) {
+                    lightningRef.current!.visible = false;
+                }
+            };
         })
         ticker.start()
 
