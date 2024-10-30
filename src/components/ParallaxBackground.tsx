@@ -76,7 +76,7 @@ const ParallaxBackground: FC = () => {
 
         ticker.add(() => {
 
-            if (scoreRef.current === 200 && !dragonDeathTriggered) {
+            if (scoreRef.current === 100 && !dragonDeathTriggered) {
                 dragonDeathTriggered = true; // Prevent re-triggering
 
                 // Set timeout for 3 seconds before playing Dragon_Death animation
@@ -205,10 +205,6 @@ const ParallaxBackground: FC = () => {
                 if (currentFrame >= dragonAttackRef.current!.totalFrames - 1) {
                     fireThrown = false;
                 }
-            }
-
-            if (destroyCubeRef.current!.visible) {
-                coinRef.current!.visible = true; // Show the coin
             }
 
             if (iceCubeRef.current) {
