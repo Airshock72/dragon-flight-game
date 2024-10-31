@@ -1,8 +1,8 @@
 import {MutableRefObject} from 'react'
 import * as PIXI from 'pixi.js'
 import {AnimatedSprite} from '@pixi/react'
-import LightningAnimation from './LightningAnimation.tsx'
-import FireThrowAnimation from './FireThrowAnimation.tsx'
+import LightningAnimation from './animations/LightningAnimation.tsx'
+import FireThrowAnimation from './animations/FireThrowAnimation.tsx'
 import useDragon from '../hooks/useDragon.ts'
 
 interface DragonProps {

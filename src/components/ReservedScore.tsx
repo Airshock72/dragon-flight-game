@@ -2,7 +2,7 @@ import {MutableRefObject} from 'react'
 import * as PIXI from 'pixi.js'
 import {Graphics, Sprite, Text} from '@pixi/react'
 import {TextStyle} from 'pixi.js'
-import SparklesAnimation from './SparklesAnimation.tsx'
+import SparklesAnimation from './animations/SparklesAnimation.tsx'
 
 interface ReservedScoreProps {
     coinBackgroundRef: MutableRefObject<PIXI.Graphics | null>

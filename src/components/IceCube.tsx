@@ -1,8 +1,8 @@
 import {MutableRefObject} from 'react'
 import * as PIXI from 'pixi.js'
 import {Sprite} from '@pixi/react'
-import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
-import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
+import CubeDestroyAnimation from './animations/CubeDestroyAnimation.tsx'
+import IceCubeEffectAnimation from './animations/IceCubeEffectAnimation.tsx'
 
 interface IceCubeProps {
     iceCubeRef: MutableRefObject<PIXI.Sprite | null>
