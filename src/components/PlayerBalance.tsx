@@ -1,11 +1,12 @@
 import {Text} from '@pixi/react'
 import {TextStyle} from 'pixi.js'
 
-const PlayerBalance = ({ coinBalanceRef, flashBalanceRef, flashBalanceTextRef  }) => {
+const PlayerBalance = ({ coinBalanceRef, flashBalanceRef, flashBalanceTextRef, coinBalanceTextRef  }) => {
 
     return (
         <>
             <Text
+                ref={coinBalanceTextRef} // Use the ref here
                 text={`${coinBalanceRef.current}`}
                 x={290}
                 y={3560}

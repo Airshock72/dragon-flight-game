@@ -46,6 +46,7 @@ const ParallaxBackground: FC = () => {
     const button1ColorRef = useRef(0x802c16);
     const button2ColorRef = useRef(0xd75e27);
     const hasStartedRef = useRef(false); // Track if START button was pressed
+    const coinBalanceTextRef = useRef<PIXI.Text | null>(null); // Ref for the coin balance text
 
     const handlePointerDown = () => {
         // Adjust y positions
@@ -80,6 +81,20 @@ const ParallaxBackground: FC = () => {
             button2Ref.current!.beginFill(button2ColorRef.current);
             button2Ref.current!.drawRoundedRect(760, 3380, 630, 180, 40);
             button2Ref.current!.endFill();
+        }
+
+        if (buttonTextRef.current === "START" && scoreRef.current > 0) {
+            coinBalanceRef.current += scoreRef.current; // Add score to coin balance
+            scoreRef.current = 0; // Reset score
+
+            // Update the text for the coin balance directly
+            if (coinBalanceTextRef.current) {
+                coinBalanceTextRef.current!.text = `${coinBalanceRef.current}`;
+            }
+
+            if (coinNumberRef.current) {
+                coinNumberRef.current!.text = `${scoreRef.current}`; // Update displayed score text
+            }
         }
 
         // Set hasStartedRef to true to allow Ice_Cube.png to appear
@@ -688,7 +703,12 @@ const ParallaxBackground: FC = () => {
                 width={2160}
                 height={3840}
             />
-            <PlayerBalance flashBalanceRef={flashBalanceRef} coinBalanceRef={coinBalanceRef} flashBalanceTextRef={flashBalanceTextRef} />
+            <PlayerBalance
+                flashBalanceRef={flashBalanceRef}
+                coinBalanceRef={coinBalanceRef}
+                flashBalanceTextRef={flashBalanceTextRef}
+                coinBalanceTextRef={coinBalanceTextRef}
+            />
             <Container
                 eventMode='dynamic'
                 cursor="pointer"
