@@ -83,6 +83,7 @@ const ParallaxBackground: FC = () => {
             button2Ref.current!.endFill();
         }
 
+        // If the button is in "CASH OUT" mode, add score to coin balance
         if (buttonTextRef.current === "START" && scoreRef.current > 0) {
             coinBalanceRef.current += scoreRef.current; // Add score to coin balance
             scoreRef.current = 0; // Reset score
@@ -95,9 +96,19 @@ const ParallaxBackground: FC = () => {
             if (coinNumberRef.current) {
                 coinNumberRef.current!.text = `${scoreRef.current}`; // Update displayed score text
             }
+
+            // Hide the elements
+            if (steadyCoinRef.current) {
+                steadyCoinRef.current!.visible = false;
+            }
+            if (coinNumberRef.current) {
+                coinNumberRef.current!.visible = false;
+            }
+            if (coinBackgroundRef.current) {
+                coinBackgroundRef.current!.visible = false;
+            }
         }
 
-        // Set hasStartedRef to true to allow Ice_Cube.png to appear
         hasStartedRef.current = true;
     };
 
@@ -115,18 +126,6 @@ const ParallaxBackground: FC = () => {
     }, [])
 
     useEffect(() => {
-        // if (
-        //     iceSpriteRefs.current.some(ref => ref.current === null)
-        //     || !waySprite1Ref.current
-        //     || !waySprite2Ref.current
-        //     || !iceSprite1Ref.current
-        //     || !iceCubeRef.current
-        //     || !brokenCube1Ref.current
-        //     || !brokenCube2Ref.current
-        //     || !cubeDestroyEffectRef.current
-        //     || !dragonFlyRef.current
-        //     || !dragonAttackRef.current
-        // ) return
 
         const ticker = new PIXI.Ticker()
         let iceCubeMovingRight = false; // Flag to track rightward movement
