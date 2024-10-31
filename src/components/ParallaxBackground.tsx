@@ -1,4 +1,4 @@
-import { FC, MutableRefObject, useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import * as PIXI from 'pixi.js'
 import {Sprite, Stage, AnimatedSprite, Graphics, Text, Container} from '@pixi/react'
 import PlayerBalance from './PlayerBalance.tsx'
@@ -9,46 +9,49 @@ import {TextStyle} from 'pixi.js'
 import SparklesAnimation from './SparklesAnimation.tsx'
 import LightningAnimation from './LightningAnimation.tsx'
 import {updateGraphicsAndText} from '../helpers'
+import useGame from '../hooks/useGame.ts'
 
-const ParallaxBackground: FC = () => {
-    const scoreRef = useRef(0); // Initialize score as a ref
-    const scoreUpdated = useRef(false); // Flag to prevent repeated increment
-    const iceSpriteRefs = useRef<(MutableRefObject<PIXI.Sprite | null>)[]>([useRef(null), useRef(null), useRef(null)])
-    const iceCubeRef = useRef<PIXI.Sprite | null>(null)
-    const destroyCubeRef = useRef<PIXI.AnimatedSprite | null>(null)
-    const cubeDestroyEffectRef = useRef<PIXI.AnimatedSprite | null>(null)
-    const iceSprite1Ref = useRef<PIXI.Sprite | null>(null)
-    const iceSprite2Ref = useRef<PIXI.Sprite | null>(null)
-    const waySprite1Ref = useRef<PIXI.Sprite | null>(null)
-    const waySprite2Ref = useRef<PIXI.Sprite | null>(null)
-    const brokenCube1Ref = useRef<PIXI.Sprite | null>(null)
-    const brokenCube2Ref = useRef<PIXI.Sprite | null>(null)
-    const dragonFlyRef = useRef<PIXI.AnimatedSprite | null>(null)
-    const dragonAttackRef = useRef<PIXI.AnimatedSprite | null>(null)
-    const hasPlayedDestroyAnimation = useRef(false)
-    const isAttacking = useRef(false)
-    const fireRef = useRef<PIXI.AnimatedSprite | null>(null);
-    const coinRef = useRef<PIXI.Sprite | null>(null); // New ref for Coin.png
-    const steadyCoinRef = useRef<PIXI.Sprite | null>(null); // New ref for Coin.png
-    const coinBackgroundRef = useRef<PIXI.Graphics | null>(null); // Ref for the gray background
-    const coinVisibleRef = useRef(false); // Ref to control visibility without causing re-render
-    const coinNumberRef = useRef<PIXI.Text | null>(null);
-    const sparkleRef = useRef<PIXI.AnimatedSprite | null>(null);
-    const lightningRef = useRef<PIXI.AnimatedSprite | null>(null);
-    const dragonDeathRef = useRef<PIXI.AnimatedSprite | null>(null);
-    const coinBalanceRef = useRef(500);
-    const flashBalanceRef = useRef(1200); // Use ref instead of state
-    const flashBalanceTextRef = useRef<PIXI.Text | null>(null); // Ref for the Text component
-    const button1Ref = useRef<PIXI.Graphics | null>(null);
-    const button2Ref = useRef<PIXI.Graphics | null>(null);
-    const textYRef = useRef(3480); // Initial y position for the Text component
-    const startButtonTextRef = useRef<PIXI.Text | null>(null); // Reference to the Text component
-    const buttonTextRef = useRef("START"); // Ref to hold button text
-    const button1ColorRef = useRef(0x802c16);
-    const button2ColorRef = useRef(0xd75e27);
-    const hasStartedRef = useRef(false); // Track if START button was pressed
-    const coinBalanceTextRef = useRef<PIXI.Text | null>(null); // Ref for the coin balance text
-    const sparklePlayingRef = useRef(false); // Track if SparklesAnimation is playing
+const ParallaxBackground = () => {
+    const {
+        iceCubeRef,
+        buttonTextRef,
+        button1Ref,
+        button2Ref,
+        button1ColorRef,
+        button2ColorRef,
+        iceSprite1Ref,
+        brokenCube2Ref,
+        lightningRef,
+        sparkleRef,
+        brokenCube1Ref,
+        coinRef,
+        steadyCoinRef,
+        coinBackgroundRef,
+        startButtonTextRef,
+        fireRef,
+        sparklePlayingRef,
+        coinBalanceTextRef,
+        dragonDeathRef,
+        flashBalanceTextRef,
+        flashBalanceRef,
+        coinBalanceRef,
+        coinNumberRef,
+        coinVisibleRef,
+        hasPlayedDestroyAnimation,
+        dragonAttackRef,
+        textYRef,
+        destroyCubeRef,
+        dragonFlyRef,
+        waySprite2Ref,
+        cubeDestroyEffectRef,
+        waySprite1Ref,
+        isAttacking,
+        iceSprite2Ref,
+        iceSpriteRefs,
+        scoreRef,
+        hasStartedRef,
+        scoreUpdated,
+    } = useGame()
 
     const handlePointerDown = () => {
         // Adjust y positions
@@ -126,19 +129,6 @@ const ParallaxBackground: FC = () => {
         // Set hasStartedRef to true if "START" button was pressed again
         hasStartedRef.current = buttonTextRef.current === 'CASH OUT';
     };
-
-    useEffect(() => {
-        const loadFont = async () => {
-            try {
-                const font = new FontFace('Keons', `url('/assets/font/Keons.240827-1105.otf')`)
-                await font.load()
-                document.fonts.add(font)
-            } catch (error) {
-                console.error('Font loading failed:', error)
-            }
-        }
-        loadFont().then()
-    }, [])
 
     useEffect(() => {
 
@@ -507,7 +497,44 @@ const ParallaxBackground: FC = () => {
             ticker.stop()
             ticker.destroy()
         }
-    }, [])
+    }, [
+        brokenCube1Ref,
+        brokenCube2Ref,
+        button1ColorRef,
+        button1Ref,
+        button2ColorRef,
+        button2Ref,
+        buttonTextRef,
+        coinBackgroundRef,
+        coinNumberRef,
+        coinRef,
+        coinVisibleRef,
+        cubeDestroyEffectRef,
+        destroyCubeRef,
+        dragonAttackRef,
+        dragonDeathRef,
+        dragonFlyRef,
+        fireRef,
+        flashBalanceRef,
+        flashBalanceTextRef,
+        hasPlayedDestroyAnimation,
+        hasStartedRef,
+        iceCubeRef,
+        iceSprite1Ref,
+        iceSprite2Ref,
+        iceSpriteRefs,
+        isAttacking,
+        lightningRef,
+        scoreRef,
+        scoreUpdated,
+        sparklePlayingRef,
+        sparkleRef,
+        startButtonTextRef,
+        steadyCoinRef,
+        textYRef,
+        waySprite1Ref,
+        waySprite2Ref
+    ])
 
     return (
         <Stage width={2160} height={3840}>
