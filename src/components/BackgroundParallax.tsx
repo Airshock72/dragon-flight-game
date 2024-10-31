@@ -18,6 +18,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
         iceSpriteRefs,
         waySprite2Ref
     } = props
+
     return (
         <>
             <Sprite

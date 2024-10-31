@@ -29,6 +29,7 @@ const ReservedScore = (props: ReservedScoreProps) => {
         coinRef,
         sparkleRef
     } = props
+
     return (
         <>
             <Graphics
