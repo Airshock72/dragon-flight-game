@@ -56,7 +56,7 @@ const ParallaxBackground: FC = () => {
     };
 
     const handlePointerUp = () => {
-        // Adjust y positions back
+        // Adjust y positions back for button animations
         if (button1Ref.current) button1Ref.current!.y -= 10;
         if (button2Ref.current) button2Ref.current!.y -= 10;
         textYRef.current -= 10;
@@ -83,7 +83,7 @@ const ParallaxBackground: FC = () => {
             button2Ref.current!.endFill();
         }
 
-        // If the button is in "CASH OUT" mode, add score to coin balance
+        // When "CASH OUT" is pressed, add scoreRef to coinBalanceRef
         if (buttonTextRef.current === "START" && scoreRef.current > 0) {
             coinBalanceRef.current += scoreRef.current; // Add score to coin balance
             scoreRef.current = 0; // Reset score
@@ -93,23 +93,49 @@ const ParallaxBackground: FC = () => {
                 coinBalanceTextRef.current!.text = `${coinBalanceRef.current}`;
             }
 
-            if (coinNumberRef.current) {
-                coinNumberRef.current!.text = `${scoreRef.current}`; // Update displayed score text
-            }
-
-            // Hide the elements
-            if (steadyCoinRef.current) {
-                steadyCoinRef.current!.visible = false;
-            }
+            // Hide the score text for scoreRef
             if (coinNumberRef.current) {
                 coinNumberRef.current!.visible = false;
             }
-            if (coinBackgroundRef.current) {
-                coinBackgroundRef.current!.visible = false;
-            }
         }
 
-        hasStartedRef.current = true;
+        // Reset positions and visibility if "CASH OUT" is pressed
+        if (buttonTextRef.current === "START") {
+            // Reset relevant element positions and visibility
+            iceCubeRef.current!.x = 5000;
+            iceCubeRef.current!.visible = false;
+            hasStartedRef.current = false;
+            hasPlayedDestroyAnimation.current = false;
+            scoreUpdated.current = false;
+
+            // Reset animations and visibility for specific elements
+            if (destroyCubeRef.current) destroyCubeRef.current!.visible = false;
+            if (coinRef.current) coinRef.current!.visible = false;
+            if (steadyCoinRef.current) steadyCoinRef.current!.visible = false;
+            if (coinBackgroundRef.current) coinBackgroundRef.current!.visible = false;
+
+            // Hide broken cubes
+            if (brokenCube1Ref.current) brokenCube1Ref.current!.visible = false;
+            if (brokenCube2Ref.current) brokenCube2Ref.current!.visible = false;
+
+            // Reset dragon animations
+            if (dragonFlyRef.current) {
+                dragonFlyRef.current!.visible = true;
+                dragonFlyRef.current!.gotoAndPlay(0);
+            }
+            if (dragonAttackRef.current) dragonAttackRef.current!.visible = false;
+            if (dragonDeathRef.current) dragonDeathRef.current!.visible = false;
+
+            // Reset fire animation
+            if (fireRef.current) fireRef.current!.visible = false;
+
+            // Reset sparkle and lightning animations
+            if (sparkleRef.current) sparkleRef.current!.visible = false;
+            if (lightningRef.current) lightningRef.current!.visible = false;
+        }
+
+        // Set hasStartedRef to true if "START" button was pressed again
+        hasStartedRef.current = buttonTextRef.current === "CASH OUT";
     };
 
     useEffect(() => {
