@@ -52,7 +52,7 @@ const ReservedScore = (props: ReservedScoreProps) => {
             />
             <Sprite
                 ref={steadyCoinRef}
-                image="/assets/Coin.png"
+                image="/dragon-flight-game/assets/Coin.png"
                 x={2000} // Final position after animation
                 y={1200}
                 width={150}
@@ -61,7 +61,7 @@ const ReservedScore = (props: ReservedScoreProps) => {
             />
             <Sprite
                 ref={coinRef}
-                image="/assets/Coin.png"
+                image="/dragon-flight-game/assets/Coin.png"
                 x={1250}
                 y={2500}
                 width={150}

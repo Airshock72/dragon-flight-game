@@ -38,7 +38,7 @@ const OuterFrame = (props: OuterFrameProps) => {
     return (
         <>
             <Sprite
-                image="/assets/Uv.png"
+                image="/dragon-flight-game/assets/Uv.png"
                 x={0}
                 y={0}
                 width={2160}

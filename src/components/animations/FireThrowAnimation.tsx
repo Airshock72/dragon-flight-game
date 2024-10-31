@@ -8,7 +8,7 @@ interface FireThrowAnimationProps {
 
 const FireThrowAnimation = (props: FireThrowAnimationProps) => {
     const { fireRef } = props
-    const fireTexture = PIXI.BaseTexture.from('/assets/VFX/Fire.png')
+    const fireTexture = PIXI.BaseTexture.from('/dragon-flight-game/assets/VFX/Fire.png')
 
     const sheetWidth = 4000; // Total width of the sprite sheet
     const sheetHeight = 12000   ; // Total height of the sprite sheet

@@ -9,7 +9,7 @@ interface SparkleAnimationProps {
 const SparklesAnimation = (props: SparkleAnimationProps) => {
     const { sparkleRef } = props
 
-    const sparklesTexture = PIXI.BaseTexture.from('/assets/VFX/sparkles.png')
+    const sparklesTexture = PIXI.BaseTexture.from('/dragon-flight-game/assets/VFX/sparkles.png')
 
     const sheetWidth = 3868; // Total width of the sprite sheet
     const sheetHeight = 5802; // Total height of the sprite sheet

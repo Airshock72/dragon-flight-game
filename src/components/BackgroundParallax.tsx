@@ -22,7 +22,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
     return (
         <>
             <Sprite
-                image="/assets/Background.png"
+                image="/dragon-flight-game/assets/Background.png"
                 x={0}
                 y={0}
                 width={2160}
@@ -30,7 +30,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
             />
             <Sprite
                 ref={iceSprite1Ref}
-                image="/assets/Background_Ice.png"
+                image="/dragon-flight-game/assets/Background_Ice.png"
                 x={0}
                 y={0}
                 width={6000}
@@ -38,7 +38,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
             />
             <Sprite
                 ref={iceSprite2Ref}
-                image="/assets/Background_Ice.png"
+                image="/dragon-flight-game/assets/Background_Ice.png"
                 x={6000} // Positioned right after the first sprite
                 y={0}
                 width={6000}
@@ -48,7 +48,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
             />
             <Sprite
                 ref={waySprite1Ref}
-                image="/assets/Way.png"
+                image="/dragon-flight-game/assets/Way.png"
                 x={0}
                 y={2715}
                 width={3500}
@@ -56,7 +56,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
             />
             <Sprite
                 ref={iceSpriteRefs.current[0]}
-                image="/assets/Ice_01.png"
+                image="/dragon-flight-game/assets/Ice_01.png"
                 x={0}
                 y={2300}
                 width={1000}
@@ -64,7 +64,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
             />
             <Sprite
                 ref={iceSpriteRefs.current[1]}
-                image="/assets/Ice_02.png"
+                image="/dragon-flight-game/assets/Ice_02.png"
                 x={3500}
                 y={2300}
                 width={1000}
@@ -72,7 +72,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
             />
             <Sprite
                 ref={iceSpriteRefs.current[2]}
-                image="/assets/Ice_03.png"
+                image="/dragon-flight-game/assets/Ice_03.png"
                 x={7000}
                 y={2300}
                 width={1000}
@@ -80,7 +80,7 @@ const BackgroundParallax = (props: BackgroundParallaxProps) => {
             />
             <Sprite
                 ref={waySprite2Ref}
-                image="/assets/Way.png"
+                image="/dragon-flight-game/assets/Way.png"
                 x={3500}
                 y={2715}
                 width={3500}

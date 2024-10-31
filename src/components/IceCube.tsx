@@ -25,7 +25,7 @@ const IceCube = (props: IceCubeProps) => {
         <>
             <Sprite
                 ref={iceCubeRef}
-                image="/assets/Ice_Cube.png"
+                image="/dragon-flight-game/assets/Ice_Cube.png"
                 x={5000}
                 y={2430}
                 width={400}
@@ -33,7 +33,7 @@ const IceCube = (props: IceCubeProps) => {
             />
             <Sprite
                 ref={brokenCube1Ref}
-                image="/assets/Ice_Cube_Broken_01.png"
+                image="/dragon-flight-game/assets/Ice_Cube_Broken_01.png"
                 x={0} // Initially hidden
                 y={2450}
                 width={100}
@@ -43,7 +43,7 @@ const IceCube = (props: IceCubeProps) => {
             />
             <Sprite
                 ref={brokenCube2Ref}
-                image="/assets/Ice_Cube_Up_Broken.png"
+                image="/dragon-flight-game/assets/Ice_Cube_Up_Broken.png"
                 x={0} // Initially hidden
                 y={2450}
                 width={100}

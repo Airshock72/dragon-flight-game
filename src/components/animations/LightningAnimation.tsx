@@ -8,7 +8,7 @@ interface LightningAnimationProps {
 
 const LightningAnimation = (props: LightningAnimationProps) => {
     const { lightningRef } = props
-    const lightningTexture = PIXI.BaseTexture.from('/assets/VFX/lighting_Attack.png')
+    const lightningTexture = PIXI.BaseTexture.from('/dragon-flight-game/assets/VFX/lighting_Attack.png')
 
     const sheetWidth = 3868; // Total width of the sprite sheet
     const sheetHeight = 4835; // Total height of the sprite sheet

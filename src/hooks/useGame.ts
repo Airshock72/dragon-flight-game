@@ -46,7 +46,7 @@ const useGame = (): UseGame => {
     useEffect(() => {
         const loadFont = async () => {
             try {
-                const font = new FontFace('Keons', `url('/assets/font/Keons.240827-1105.otf')`)
+                const font = new FontFace('Keons', `url('/dragon-flight-game/assets/font/Keons.240827-1105.otf')`)
                 await font.load()
                 document.fonts.add(font)
             } catch (error) {

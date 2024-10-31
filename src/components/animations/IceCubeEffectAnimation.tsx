@@ -9,7 +9,7 @@ interface IceCubeEffectAnimationProps {
 const IceCubeEffectAnimation = (props: IceCubeEffectAnimationProps) => {
     const { cubeDestroyEffectRef } = props
 
-    const cubeDestroyEffectBaseTexture = PIXI.BaseTexture.from('/assets/VFX/Ice_Cube_Effect_Down.png')
+    const cubeDestroyEffectBaseTexture = PIXI.BaseTexture.from('/dragon-flight-game/assets/VFX/Ice_Cube_Effect_Down.png')
 
     const sheetWidth = 4000; // Total width of the sprite sheet
     const sheetHeight = 6000; // Total height of the sprite sheet

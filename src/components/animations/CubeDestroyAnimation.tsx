@@ -9,7 +9,7 @@ interface CubeDestroyAnimationProps {
 const CubeDestroyAnimation = (props: CubeDestroyAnimationProps) => {
     const { destroyCubeRef } = props
 
-    const destroyCubeTexture = PIXI.BaseTexture.from('/assets/VFX/Cube.png')
+    const destroyCubeTexture = PIXI.BaseTexture.from('/dragon-flight-game/assets/VFX/Cube.png')
 
     const sheetWidth = 4096; // Total width of the sprite sheet
     const sheetHeight = 4096; // Total height of the sprite sheet
