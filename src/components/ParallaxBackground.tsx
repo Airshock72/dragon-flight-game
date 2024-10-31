@@ -298,21 +298,6 @@ const ParallaxBackground: FC = () => {
                             lightningRef.current!.visible = true;
                             lightningRef.current!.gotoAndPlay(0);
                         }
-
-                        // Listen for the completion of Dragon_Death animation
-                        dragonDeathRef.current!.onComplete = () => {
-                            dragonDeathRef.current!.visible = false;
-
-                            // Optional: Show Dragon_Fly again
-                            if (dragonFlyRef.current) {
-                                dragonFlyRef.current!.visible = true;
-                                dragonFlyRef.current!.gotoAndPlay(0);
-                            }
-
-                            if (lightningRef.current) {
-                                lightningRef.current!.visible = false;
-                            }
-                        };
                     }
                 }, 3000);
             }
@@ -482,39 +467,67 @@ const ParallaxBackground: FC = () => {
             }
 
             dragonDeathRef.current!.onComplete = () => {
+                // Hide the Dragon Death animation and reset the dragon flight
                 dragonDeathRef.current!.visible = false;
-
-                // Hide steady coin, score text, and coin background
-                if (steadyCoinRef.current) {
-                    steadyCoinRef.current!.visible = false;
-                }
-
-                if (coinRef.current) {
-                    coinRef.current!.visible = false;
-                }
-
-                if (coinNumberRef.current) {
-                    coinNumberRef.current!.visible = false;
-                }
-
-                if (coinBackgroundRef.current) {
-                    coinBackgroundRef.current!.visible = false;
-                }
-
-                // Reset the score to 0
-                scoreRef.current = 0;
-
                 dragonDeathTriggered = false;
 
-                // Optional: Show Dragon_Fly again
+                // Reset button text and colors
+                buttonTextRef.current = "START";
+                button1ColorRef.current = 0x802c16;
+                button2ColorRef.current = 0xd75e27;
+
+                // Update button text directly
+                if (startButtonTextRef.current) {
+                    startButtonTextRef.current!.text = buttonTextRef.current;
+                }
+
+                // Update button colors directly
+                if (button1Ref.current) {
+                    button1Ref.current!.clear();
+                    button1Ref.current!.beginFill(button1ColorRef.current);
+                    button1Ref.current!.drawRoundedRect(760, 3480, 630, 100, 40);
+                    button1Ref.current!.endFill();
+                }
+                if (button2Ref.current) {
+                    button2Ref.current!.clear();
+                    button2Ref.current!.beginFill(button2ColorRef.current);
+                    button2Ref.current!.drawRoundedRect(760, 3380, 630, 180, 40);
+                    button2Ref.current!.endFill();
+                }
+
+                // Reset Ice_Cube and other elements' visibility
+                if (iceCubeRef.current) {
+                    iceCubeRef.current!.x = 5000; // Move off-screen
+                    iceCubeRef.current!.visible = false;
+                }
+
+                hasStartedRef.current = false;
+                hasPlayedDestroyAnimation.current = false;
+                scoreUpdated.current = false;
+                sparklePlayingRef.current = false;
+
+                // Hide animations and reset relevant elements
+                [destroyCubeRef, coinRef, steadyCoinRef, coinBackgroundRef, brokenCube1Ref, brokenCube2Ref, lightningRef, sparkleRef].forEach(ref => {
+                    if (ref.current) ref.current!.visible = false;
+                });
+
+                // Reset the dragon flight animation
                 if (dragonFlyRef.current) {
                     dragonFlyRef.current!.visible = true;
                     dragonFlyRef.current!.gotoAndPlay(0);
                 }
 
-                if (lightningRef.current) {
-                    lightningRef.current!.visible = false;
+                // Reset score and coin balance display
+                scoreRef.current = 0;
+                if (coinNumberRef.current) {
+                    coinNumberRef.current!.visible = false;
                 }
+
+                // Hide fire animation
+                if (fireRef.current) fireRef.current!.visible = false;
+
+                // Reset text positions
+                textYRef.current = 3480;
             };
         })
         ticker.start()
