@@ -4,11 +4,10 @@ import PlayerBalance from './PlayerBalance.tsx'
 import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
 import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
 import FireThrowAnimation from './FireThrowAnimation.tsx'
-import {TextStyle} from 'pixi.js'
-import SparklesAnimation from './SparklesAnimation.tsx'
 import LightningAnimation from './LightningAnimation.tsx'
 import useGame from '../hooks/useGame.ts'
 import BackgroundParallax from './BackgroundParallax.tsx'
+import ReservedScore from './ReservedScore.tsx'
 
 const Game = () => {
     const {
@@ -56,50 +55,14 @@ const Game = () => {
                 waySprite1Ref={waySprite1Ref}
                 waySprite2Ref={waySprite2Ref}
             />
-            <Graphics
-                ref={coinBackgroundRef}
-                draw={(g) => {
-                    g.clear();
-                    g.beginFill(0x1b3284, 0.3); // Update color to #bbbbbb
-                    g.drawRoundedRect(1830, 1190, 400, 170, 20); // Increase width to 200 (or your desired width)
-                    g.endFill();
-                }}
-                visible={false} // Initially hidden
+            <ReservedScore
+                coinBackgroundRef={coinBackgroundRef}
+                coinNumberRef={coinNumberRef}
+                scoreRef={scoreRef}
+                steadyCoinRef={steadyCoinRef}
+                coinRef={coinRef}
+                sparkleRef={sparkleRef}
             />
-            <Text
-                ref={coinNumberRef}
-                text={`${scoreRef.current}`} // Initial score text
-                x={1870}
-                y={1240}
-                visible={false}
-                style={
-                    new TextStyle({
-                        align: 'center',
-                        fill: ['#fff'],
-                        fontSize: 60,
-                        fontFamily: 'Keons'
-                    })
-                }
-            />
-            <Sprite
-                ref={steadyCoinRef}
-                image="/assets/Coin.png"
-                x={2000} // Final position after animation
-                y={1200}
-                width={150}
-                height={150}
-                visible={false}
-            />
-            <Sprite
-                ref={coinRef}
-                image="/assets/Coin.png"
-                x={1250}
-                y={2500}
-                width={150}
-                height={150}
-                visible={false}
-            />
-            <SparklesAnimation sparkleRef={sparkleRef} />
             <Sprite
                 ref={iceCubeRef}
                 image="/assets/Ice_Cube.png"
