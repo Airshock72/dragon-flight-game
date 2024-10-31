@@ -47,6 +47,7 @@ const ParallaxBackground: FC = () => {
     const button2ColorRef = useRef(0xd75e27);
     const hasStartedRef = useRef(false); // Track if START button was pressed
     const coinBalanceTextRef = useRef<PIXI.Text | null>(null); // Ref for the coin balance text
+    const sparklePlayingRef = useRef(false); // Track if SparklesAnimation is playing
 
     const handlePointerDown = () => {
         // Adjust y positions
@@ -62,7 +63,7 @@ const ParallaxBackground: FC = () => {
         textYRef.current -= 10;
 
         // Toggle button text and color using refs directly
-        buttonTextRef.current = buttonTextRef.current === "START" ? "CASH OUT" : "START";
+        buttonTextRef.current = buttonTextRef.current === 'START' ? 'CASH OUT' : 'START';
         button1ColorRef.current = button1ColorRef.current === 0x802c16 ? 0x316433 : 0x802c16;
         button2ColorRef.current = button2ColorRef.current === 0xd75e27 ? 0x72a639 : 0xd75e27;
 
@@ -84,7 +85,7 @@ const ParallaxBackground: FC = () => {
         }
 
         // When "CASH OUT" is pressed, add scoreRef to coinBalanceRef
-        if (buttonTextRef.current === "START" && scoreRef.current > 0) {
+        if (buttonTextRef.current === 'START' && scoreRef.current > 0) {
             coinBalanceRef.current += scoreRef.current; // Add score to coin balance
             scoreRef.current = 0; // Reset score
 
@@ -100,13 +101,14 @@ const ParallaxBackground: FC = () => {
         }
 
         // Reset positions and visibility if "CASH OUT" is pressed
-        if (buttonTextRef.current === "START") {
+        if (buttonTextRef.current === 'START') {
             // Reset relevant element positions and visibility
             iceCubeRef.current!.x = 5000;
             iceCubeRef.current!.visible = false;
             hasStartedRef.current = false;
             hasPlayedDestroyAnimation.current = false;
             scoreUpdated.current = false;
+            sparklePlayingRef.current = false; // Reset sparkle animation flag
 
             // Reset animations and visibility for specific elements
             if (destroyCubeRef.current) destroyCubeRef.current!.visible = false;
@@ -135,7 +137,7 @@ const ParallaxBackground: FC = () => {
         }
 
         // Set hasStartedRef to true if "START" button was pressed again
-        hasStartedRef.current = buttonTextRef.current === "CASH OUT";
+        hasStartedRef.current = buttonTextRef.current === 'CASH OUT';
     };
 
     useEffect(() => {
@@ -362,15 +364,22 @@ const ParallaxBackground: FC = () => {
                 coinRef.current!.y = y;
                 coinArcStep++;
             }
-            else if (coinArcStep > coinArcDuration && !scoreUpdated.current) {
+            if (coinAnimating && coinArcStep > coinArcDuration && !scoreUpdated.current) {
                 coinAnimating = false;
                 coinRef.current!.visible = false;
                 steadyCoinRef.current!.visible = true;
 
-                // Trigger SparklesAnimation here
-                if (sparkleRef.current) {
+                // Trigger SparklesAnimation here only if it is not already playing
+                if (!sparklePlayingRef.current && sparkleRef.current) {
+                    sparklePlayingRef.current = true; // Set flag to indicate that sparkle animation is playing
                     sparkleRef.current!.visible = true;
                     sparkleRef.current!.gotoAndPlay(0); // Start the sparkle animation
+
+                    // Add an event listener to detect when the animation completes
+                    sparkleRef.current!.onComplete = () => {
+                        sparkleRef.current!.visible = false;
+                        sparklePlayingRef.current = false; // Reset the flag once the animation ends
+                    };
                 }
 
                 scoreRef.current += 100; // Increment score only once
