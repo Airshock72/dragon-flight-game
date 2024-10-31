@@ -8,6 +8,7 @@ import FireThrowAnimation from './FireThrowAnimation.tsx'
 import {TextStyle} from 'pixi.js'
 import SparklesAnimation from './SparklesAnimation.tsx'
 import LightningAnimation from './LightningAnimation.tsx'
+import {updateGraphicsAndText} from '../helpers'
 
 const ParallaxBackground: FC = () => {
     const scoreRef = useRef(0); // Initialize score as a ref
@@ -68,21 +69,7 @@ const ParallaxBackground: FC = () => {
         button2ColorRef.current = button2ColorRef.current === 0xd75e27 ? 0x72a639 : 0xd75e27;
 
         // Update Text and Graphics directly to avoid re-rendering
-        if (startButtonTextRef.current) {
-            startButtonTextRef.current!.text = buttonTextRef.current;
-        }
-        if (button1Ref.current) {
-            button1Ref.current!.clear();
-            button1Ref.current!.beginFill(button1ColorRef.current);
-            button1Ref.current!.drawRoundedRect(760, 3480, 630, 100, 40);
-            button1Ref.current!.endFill();
-        }
-        if (button2Ref.current) {
-            button2Ref.current!.clear();
-            button2Ref.current!.beginFill(button2ColorRef.current);
-            button2Ref.current!.drawRoundedRect(760, 3380, 630, 180, 40);
-            button2Ref.current!.endFill();
-        }
+        updateGraphicsAndText(startButtonTextRef, buttonTextRef, button1Ref, button2Ref, button1ColorRef, button2ColorRef)
 
         // When "CASH OUT" is pressed, add scoreRef to coinBalanceRef
         if (buttonTextRef.current === 'START' && scoreRef.current > 0) {
@@ -477,23 +464,7 @@ const ParallaxBackground: FC = () => {
                 button2ColorRef.current = 0xd75e27;
 
                 // Update button text directly
-                if (startButtonTextRef.current) {
-                    startButtonTextRef.current!.text = buttonTextRef.current;
-                }
-
-                // Update button colors directly
-                if (button1Ref.current) {
-                    button1Ref.current!.clear();
-                    button1Ref.current!.beginFill(button1ColorRef.current);
-                    button1Ref.current!.drawRoundedRect(760, 3480, 630, 100, 40);
-                    button1Ref.current!.endFill();
-                }
-                if (button2Ref.current) {
-                    button2Ref.current!.clear();
-                    button2Ref.current!.beginFill(button2ColorRef.current);
-                    button2Ref.current!.drawRoundedRect(760, 3380, 630, 180, 40);
-                    button2Ref.current!.endFill();
-                }
+                updateGraphicsAndText(startButtonTextRef, buttonTextRef, button1Ref, button2Ref, button1ColorRef, button2ColorRef)
 
                 // Reset Ice_Cube and other elements' visibility
                 if (iceCubeRef.current) {
