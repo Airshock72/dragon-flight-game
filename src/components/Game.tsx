@@ -1,13 +1,12 @@
 import * as PIXI from 'pixi.js'
 import {Sprite, Stage, AnimatedSprite, Graphics, Text, Container} from '@pixi/react'
 import PlayerBalance from './PlayerBalance.tsx'
-import CubeDestroyAnimation from './CubeDestroyAnimation.tsx'
-import IceCubeEffectAnimation from './IceCubeEffectAnimation.tsx'
 import FireThrowAnimation from './FireThrowAnimation.tsx'
 import LightningAnimation from './LightningAnimation.tsx'
 import useGame from '../hooks/useGame.ts'
 import BackgroundParallax from './BackgroundParallax.tsx'
 import ReservedScore from './ReservedScore.tsx'
+import IceCube from './IceCube.tsx'
 
 const Game = () => {
     const {
@@ -63,36 +62,13 @@ const Game = () => {
                 coinRef={coinRef}
                 sparkleRef={sparkleRef}
             />
-            <Sprite
-                ref={iceCubeRef}
-                image="/assets/Ice_Cube.png"
-                x={5000}
-                y={2430}
-                width={400}
-                height={400}
+            <IceCube
+                cubeDestroyEffectRef={cubeDestroyEffectRef}
+                brokenCube1Ref={brokenCube1Ref}
+                iceCubeRef={iceCubeRef}
+                brokenCube2Ref={brokenCube2Ref}
+                destroyCubeRef={destroyCubeRef}
             />
-            <Sprite
-                ref={brokenCube1Ref}
-                image="/assets/Ice_Cube_Broken_01.png"
-                x={0} // Initially hidden
-                y={2450}
-                width={100}
-                height={100}
-                visible={false}
-                rotation={-Math.PI / 2} // Rotate 90 degrees to the left
-            />
-            <Sprite
-                ref={brokenCube2Ref}
-                image="/assets/Ice_Cube_Up_Broken.png"
-                x={0} // Initially hidden
-                y={2450}
-                width={100}
-                height={100}
-                visible={false}
-                rotation={Math.PI / 2} // Rotate 90 degrees to the left
-            />
-            <CubeDestroyAnimation destroyCubeRef={destroyCubeRef} />
-            <IceCubeEffectAnimation cubeDestroyEffectRef={cubeDestroyEffectRef} />
             <AnimatedSprite
                 ref={dragonFlyRef}
                 textures={Array.from({ length: 31 }, (_, index) => {
