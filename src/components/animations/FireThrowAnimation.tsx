@@ -1,7 +1,13 @@
 import {AnimatedSprite} from '@pixi/react'
 import * as PIXI from 'pixi.js'
+import {MutableRefObject} from 'react'
 
-const FireThrowAnimation = ({ fireRef }) => {
+interface FireThrowAnimationProps {
+    fireRef: MutableRefObject<PIXI.AnimatedSprite | null>
+}
+
+const FireThrowAnimation = (props: FireThrowAnimationProps) => {
+    const { fireRef } = props
     const fireTexture = PIXI.BaseTexture.from('/assets/VFX/Fire.png')
 
     const sheetWidth = 4000; // Total width of the sprite sheet

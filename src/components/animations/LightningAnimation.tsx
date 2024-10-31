@@ -1,7 +1,13 @@
 import * as PIXI from 'pixi.js'
 import {AnimatedSprite} from '@pixi/react'
+import {MutableRefObject} from 'react'
 
-const LightningAnimation = ({ lightningRef }) => {
+interface LightningAnimationProps {
+    lightningRef: MutableRefObject<PIXI.AnimatedSprite | null>
+}
+
+const LightningAnimation = (props: LightningAnimationProps) => {
+    const { lightningRef } = props
     const lightningTexture = PIXI.BaseTexture.from('/assets/VFX/lighting_Attack.png')
 
     const sheetWidth = 3868; // Total width of the sprite sheet

@@ -1,7 +1,13 @@
 import {AnimatedSprite} from '@pixi/react'
 import * as PIXI from 'pixi.js'
+import {MutableRefObject} from 'react'
 
-const SparklesAnimation = ({ sparkleRef }) => {
+interface SparkleAnimationProps {
+    sparkleRef: MutableRefObject<PIXI.AnimatedSprite | null>
+}
+
+const SparklesAnimation = (props: SparkleAnimationProps) => {
+    const { sparkleRef } = props
 
     const sparklesTexture = PIXI.BaseTexture.from('/assets/VFX/sparkles.png')
 

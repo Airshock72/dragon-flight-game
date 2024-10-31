@@ -1,4 +1,4 @@
-import {FC, MutableRefObject} from 'react'
+import {MutableRefObject} from 'react'
 import {AnimatedSprite} from '@pixi/react'
 import * as PIXI from 'pixi.js'
 
@@ -6,7 +6,8 @@ interface IceCubeEffectAnimationProps {
     cubeDestroyEffectRef: MutableRefObject<PIXI.AnimatedSprite | null>;
 }
 
-const IceCubeEffectAnimation: FC<IceCubeEffectAnimationProps> = ({ cubeDestroyEffectRef }) => {
+const IceCubeEffectAnimation = (props: IceCubeEffectAnimationProps) => {
+    const { cubeDestroyEffectRef } = props
 
     const cubeDestroyEffectBaseTexture = PIXI.BaseTexture.from('/assets/VFX/Ice_Cube_Effect_Down.png')
 

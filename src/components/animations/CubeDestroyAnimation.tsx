@@ -7,6 +7,7 @@ interface CubeDestroyAnimationProps {
 }
 
 const CubeDestroyAnimation = (props: CubeDestroyAnimationProps) => {
+    const { destroyCubeRef } = props
 
     const destroyCubeTexture = PIXI.BaseTexture.from('/assets/VFX/Cube.png')
 
@@ -30,13 +31,13 @@ const CubeDestroyAnimation = (props: CubeDestroyAnimationProps) => {
         const ticker = new PIXI.Ticker();
 
         ticker.add(() => {
-            if (props.destroyCubeRef.current) {
-                (props.destroyCubeRef.current as PIXI.AnimatedSprite).x -= 15; // Move the cube left by 15 pixels per tick
+            if (destroyCubeRef.current) {
+                (destroyCubeRef.current as PIXI.AnimatedSprite).x -= 15; // Move the cube left by 15 pixels per tick
 
                 // Hide when it goes off-screen, and reset x position if needed
-                if ((props.destroyCubeRef.current as PIXI.AnimatedSprite).x <= -frameWidth) {
-                    (props.destroyCubeRef.current as PIXI.AnimatedSprite).visible = false;
-                    (props.destroyCubeRef.current as PIXI.AnimatedSprite).stop(); // Stop the animation
+                if ((destroyCubeRef.current as PIXI.AnimatedSprite).x <= -frameWidth) {
+                    (destroyCubeRef.current as PIXI.AnimatedSprite).visible = false;
+                    (destroyCubeRef.current as PIXI.AnimatedSprite).stop(); // Stop the animation
                 }
             }
         });
@@ -47,12 +48,12 @@ const CubeDestroyAnimation = (props: CubeDestroyAnimationProps) => {
             ticker.stop();
             ticker.destroy();
         };
-    }, [frameWidth, props.destroyCubeRef]);
+    }, [frameWidth, destroyCubeRef]);
 
     return (
         <AnimatedSprite
             isPlaying={true}
-            ref={props.destroyCubeRef}
+            ref={destroyCubeRef}
             textures={destroyCubeFrames}
             initialFrame={0}
             animationSpeed={0.4}
