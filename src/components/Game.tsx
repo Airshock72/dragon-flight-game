@@ -1,12 +1,11 @@
 import * as PIXI from 'pixi.js'
-import {Sprite, Stage, AnimatedSprite, Graphics, Text, Container} from '@pixi/react'
+import {Sprite, Stage, Graphics, Text, Container} from '@pixi/react'
 import PlayerBalance from './PlayerBalance.tsx'
-import FireThrowAnimation from './FireThrowAnimation.tsx'
-import LightningAnimation from './LightningAnimation.tsx'
 import useGame from '../hooks/useGame.ts'
 import BackgroundParallax from './BackgroundParallax.tsx'
 import ReservedScore from './ReservedScore.tsx'
 import IceCube from './IceCube.tsx'
+import Dragon from './Dragon.tsx'
 
 const Game = () => {
     const {
@@ -69,68 +68,13 @@ const Game = () => {
                 brokenCube2Ref={brokenCube2Ref}
                 destroyCubeRef={destroyCubeRef}
             />
-            <AnimatedSprite
-                ref={dragonFlyRef}
-                textures={Array.from({ length: 31 }, (_, index) => {
-                    const row = Math.floor(index / 4);
-                    const col = index % 4;
-                    return new PIXI.Texture(
-                        PIXI.BaseTexture.from('/assets/dragon_animation/Dragon_Fly.png'),
-                        new PIXI.Rectangle(col * (5840 / 4), row * (5944 / 8), 5840 / 4, 5944 / 8)
-                    );
-                })}
-                isPlaying={true}
-                initialFrame={0}
-                animationSpeed={0.8}
-                x={0}
-                y={1500}
-                width={(5840 / 4) * 0.5}
-                height={(5944 / 8) * 0.5}
-                loop={true}
-                visible={true}
-            />
-            <AnimatedSprite
-                ref={dragonAttackRef}
-                textures={Array.from({ length: 30 }, (_, index) => {
-                    const row = Math.floor(index / 4);
-                    const col = index % 4;
-                    return new PIXI.Texture(
-                        PIXI.BaseTexture.from('/assets/dragon_animation/Attack.png'),
-                        new PIXI.Rectangle(col * (6656 / 4), row * (8864 / 8), 6656 / 4, 8864 / 8)
-                    );
-                })}
-                isPlaying={false}
-                initialFrame={0}
-                animationSpeed={0.5}
-                x={-10}
-                y={1370}
-                width={(6656 / 4) * 0.5}
-                height={(8864 / 8) * 0.5}
-                loop={false}
-                visible={false}
-            />
-            <AnimatedSprite
-                ref={dragonDeathRef}
-                textures={Array.from({ length: 32 }, (_, index) => {
-                    const row = Math.floor(index / 4);
-                    const col = index % 4;
-                    return new PIXI.Texture(
-                        PIXI.BaseTexture.from('/assets/dragon_animation/Dragon_Death.png'),
-                        new PIXI.Rectangle(col * (6080 / 4), row * (7536 / 8), 6080 / 4, 7536 / 8)
-                    );
-                })}
-                isPlaying={true}
-                initialFrame={0}
-                animationSpeed={0.5}
-                x={5}
-                y={1500}
-                width={(6080 / 4) * 0.5}
-                height={(7536 / 8) * 0.5}
-                loop={false}
-                visible={false}
-            />
-            <LightningAnimation lightningRef={lightningRef} />
-            <FireThrowAnimation fireRef={fireRef} />
+           <Dragon
+                dragonFlyRef={dragonFlyRef}
+                dragonAttackRef={dragonAttackRef}
+                dragonDeathRef={dragonDeathRef}
+                lightningRef={lightningRef}
+                fireRef={fireRef}
+           />
             <Sprite
                 image="/assets/Uv.png"
                 x={0}
