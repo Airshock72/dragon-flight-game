@@ -40,4 +40,6 @@ export interface UseGame {
     hasStartedRef: MutableRefObject<boolean>
     coinBalanceTextRef: MutableRefObject<PIXI.Text | null>
     sparklePlayingRef: MutableRefObject<boolean>
+    handlePointerDown: () => void
+    handlePointerUp: () => void
 }
